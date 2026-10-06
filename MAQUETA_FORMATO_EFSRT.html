@@ -1,0 +1,3350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yamel Sport · Sistema Integral ERP Textil | EFSRT</title>
+
+<!-- ============================================================
+     LIBRERÍAS EXTERNAS (CDN)
+     ============================================================ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+  /* ============================================================
+     BASE GLASMÓRFICA
+     ============================================================ */
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #f8fafc;
+    min-height: 100vh;
+    background: #0a0f1e;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 15% 10%, rgba(239, 68, 68, 0.22), transparent 60%),
+      radial-gradient(ellipse 60% 55% at 90% 85%, rgba(56, 189, 248, 0.2), transparent 60%),
+      radial-gradient(ellipse 50% 45% at 55% 50%, rgba(139, 92, 246, 0.16), transparent 65%),
+      linear-gradient(135deg, #0a0f1e 0%, #0f172a 45%, #1a0f24 100%);
+    z-index: -2; pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: -1; pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 75%);
+  }
+  .blob {
+    position: fixed; border-radius: 50%;
+    filter: blur(100px); opacity: 0.55;
+    pointer-events: none; z-index: -1;
+  }
+  .blob-1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(239, 68, 68, 0.55), transparent 70%); top: -180px; left: -120px; animation: float1 22s ease-in-out infinite; }
+  .blob-2 { width: 620px; height: 620px; background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%); bottom: -220px; right: -180px; animation: float2 28s ease-in-out infinite; }
+  .blob-3 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%); top: 42%; left: 45%; animation: float3 24s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-30px) scale(1.1); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-50px,40px) scale(0.95); } }
+  @keyframes float3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,50px) scale(1.05); } }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+  .view { display: none; }
+  .view.active { display: block; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* GLASS */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .glass-dark {
+    background: rgba(10, 15, 30, 0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* LOGIN */
+  #loginScreen {
+    position: fixed; inset: 0; z-index: 5000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; overflow-y: auto;
+  }
+  #loginScreen.hidden { display: none; }
+  .login-split {
+    position: relative; z-index: 10;
+    display: grid; grid-template-columns: 1fr;
+    width: 100%; max-width: 1050px; min-height: 640px;
+    border-radius: 28px; overflow: hidden;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  @media (min-width: 900px) { .login-split { grid-template-columns: 1.05fr 1fr; } }
+  .login-hero {
+    position: relative;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(239, 68, 68, 0.35), transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(56, 189, 248, 0.28), transparent 60%),
+      linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #0a0f1e 100%);
+    padding: 48px 44px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+  }
+  .login-hero::before {
+    content: ''; position: absolute; top: -120px; right: -120px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.5), transparent 70%);
+    border-radius: 50%; filter: blur(40px);
+    animation: float1 18s ease-in-out infinite;
+  }
+  .login-hero::after {
+    content: ''; position: absolute; bottom: -100px; left: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%);
+    border-radius: 50%; filter: blur(40px);
+    animation: float2 24s ease-in-out infinite;
+  }
+  .login-hero > * { position: relative; z-index: 2; }
+  .login-hero .diagonal-stripes {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px);
+    pointer-events: none; z-index: 1;
+  }
+  .hero-logo {
+    width: 62px; height: 62px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+  }
+  .hero-logo::after {
+    content: ''; position: absolute; inset: 2px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.25) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .feature-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    font-size: 11.5px; font-weight: 500;
+    color: #e2e8f0; margin-bottom: 8px;
+  }
+  .feature-chip i { font-size: 12px; }
+  .login-form-panel {
+    padding: 48px 44px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: rgba(15, 23, 42, 0.3);
+  }
+  .glass-input {
+    width: 100%; padding: 13px 16px 13px 46px;
+    background: rgba(10, 15, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #ffffff; font-size: 13.5px;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
+  }
+  .glass-input:hover { border-color: rgba(255, 255, 255, 0.18); }
+  .glass-input:focus {
+    outline: none; background: rgba(10, 15, 30, 0.7);
+    border-color: rgba(239, 68, 68, 0.55);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+  }
+  .input-icon {
+    position: absolute; left: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px; color: #64748b;
+    transition: color 0.25s ease; pointer-events: none;
+  }
+  .input-wrapper:focus-within .input-icon { color: #ef4444; }
+  .role-option {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+    backdrop-filter: blur(10px);
+    position: relative; overflow: hidden;
+  }
+  .role-option::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.3), transparent);
+    transition: width 0.3s ease;
+  }
+  .role-option:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(2px);
+  }
+  .role-option:hover::before { width: 100%; }
+  .role-option.selected {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.08));
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.22);
+  }
+  .role-option.selected::before { width: 4px; background: #ef4444; }
+  .role-option.selected .role-radio {
+    background: #ef4444; border-color: #ef4444;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
+  }
+  .role-option.selected .role-radio::after {
+    content: ''; width: 6px; height: 6px;
+    background: white; border-radius: 50%;
+  }
+  .role-radio {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s ease;
+  }
+  .hint-box {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.04));
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    display: flex; gap: 10px; align-items: flex-start;
+    animation: slideUp 0.35s ease;
+    position: relative; overflow: hidden;
+  }
+  .hint-box::before {
+    content: ''; position: absolute; top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+  }
+  .btn-login {
+    width: 100%; padding: 14px 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff; font-weight: 700; font-size: 13.5px;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 32px rgba(239, 68, 68, 0.35);
+  }
+  .btn-login::before {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.5s ease;
+  }
+  .btn-login:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 20px 44px rgba(239, 68, 68, 0.5);
+  }
+  .btn-login:hover::before { left: 100%; }
+
+  /* APP */
+  .sidebar-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    border-radius: 11px;
+    font-size: 13px; font-weight: 500;
+    color: #cbd5e1; cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative; margin-bottom: 3px;
+    border: 1px solid transparent;
+  }
+  .sidebar-item:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; border-color: rgba(255, 255, 255, 0.08); }
+  .sidebar-item.active {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.12));
+    color: #ffffff;
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.22);
+  }
+  .sidebar-item.active::before {
+    content: ''; position: absolute; left: 0; top: 22%; height: 56%;
+    width: 3px; background: #ef4444;
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+  }
+  .sidebar-item i:first-child { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
+  .sidebar-item .item-badge {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px; flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .sidebar-item .item-badge.danger {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fecaca;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 0.02em; text-transform: uppercase;
+    white-space: nowrap; border: 1px solid;
+    backdrop-filter: blur(10px);
+  }
+  .badge-success  { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3); }
+  .badge-warning  { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border-color: rgba(245, 158, 11, 0.3); }
+  .badge-danger   { background: rgba(239, 68, 68, 0.18); color: #fca5a5; border-color: rgba(239, 68, 68, 0.4); }
+  .badge-info     { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.3); }
+  .badge-neutral  { background: rgba(148, 163, 184, 0.12); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.25); }
+  .badge-purple   { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border-color: rgba(168, 85, 247, 0.3); }
+  .glass-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .glass-table thead th {
+    background: rgba(255, 255, 255, 0.04);
+    color: #94a3b8; font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+  }
+  .glass-table tbody td {
+    padding: 14px 16px; font-size: 13px;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+  }
+  .glass-table tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+  .glass-table tbody tr:last-child td { border-bottom: none; }
+  .glass-table tbody tr.row-critical { background: rgba(239, 68, 68, 0.08); }
+  .form-label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    color: #94a3b8; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 10px 14px; font-size: 13px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+    font-family: inherit; color: #f1f5f9;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none; background: rgba(15, 23, 42, 0.65);
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  }
+  .form-input:disabled { background: rgba(15, 23, 42, 0.7); color: #64748b; }
+  .form-select option { background: #0f172a; color: #f1f5f9; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px; font-size: 13px; font-weight: 600;
+    border-radius: 10px; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    font-family: inherit; white-space: nowrap;
+    backdrop-filter: blur(10px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.85));
+    color: #ffffff;
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(239, 68, 68, 0.5); }
+  .btn-emerald {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(22, 163, 74, 0.85));
+    color: #ffffff;
+    border-color: rgba(16, 185, 129, 0.5);
+  }
+  .btn-emerald:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(16, 185, 129, 0.45); }
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+  .kpi-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 22px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  .kpi-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  }
+  .kpi-card:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.2); }
+  .kpi-icon {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 3000; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-content {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    max-width: 600px; width: 100%; max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 32px 96px rgba(0, 0, 0, 0.5);
+  }
+  .modal-content.modal-lg { max-width: 800px; }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 14px 22px;
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-radius: 14px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-weight: 500;
+    z-index: 6000;
+    opacity: 0; transform: translateY(30px);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none; max-width: 90vw;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success i { color: #6ee7b7; }
+  .toast.error i { color: #fca5a5; }
+  .toast.info i { color: #7dd3fc; }
+
+  /* ============================================================
+     EFSRT — FORMATO ACADÉMICO INSTITUCIONAL
+     ============================================================ */
+  .efsrt-doc {
+    position: fixed; inset: 0;
+    z-index: 7000;
+    background: #94a3b8;
+    display: none;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+  .efsrt-doc.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .efsrt-page {
+    max-width: 850px;
+    margin: 0 auto 30px auto;
+    background: #ffffff;
+    color: #1a1a1a;
+    padding: 55px 65px 75px 65px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    position: relative;
+    font-size: 11pt;
+    line-height: 1.6;
+    min-height: 1080px;
+  }
+
+  /* Encabezado institucional */
+  .efsrt-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid #1e3a8a;
+    margin-bottom: 22px;
+  }
+  .efsrt-header-text {
+    text-align: center;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    line-height: 1.35;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+  .efsrt-header-text .line2 {
+    font-size: 8.5pt;
+    font-weight: 600;
+    margin-top: 2px;
+    color: #334155;
+  }
+  /* Mini logo ELP para encabezado */
+  .elp-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 42px;
+  }
+  .elp-mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .elp-mini-bar-1 { width: 7px; height: 22px; background: #dc2626; }
+  .elp-mini-bar-2 { width: 7px; height: 32px; background: #38bdf8; }
+  .elp-mini-bar-3 { width: 7px; height: 42px; background: #fbbf24; }
+  .elp-mini-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: #1e3a8a;
+    letter-spacing: -1px;
+    margin-left: -26px;
+    margin-bottom: -2px;
+    z-index: 2;
+  }
+
+  /* Logo grande en portada */
+  .elp-logo-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 36px auto;
+  }
+  .elp-logo-bars {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+  .elp-logo-bar-1 { width: 32px; height: 90px; background: #dc2626; }
+  .elp-logo-bar-2 { width: 32px; height: 130px; background: #38bdf8; }
+  .elp-logo-bar-3 { width: 32px; height: 170px; background: #fbbf24; }
+  .elp-logo-elp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 100px;
+    font-weight: 900;
+    color: #1e3a8a;
+    letter-spacing: -6px;
+    line-height: 1;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .elp-logo-text {
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    color: #1e3a8a;
+    font-weight: 800;
+    line-height: 1.05;
+  }
+  .elp-logo-text .t1 {
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    display: block;
+  }
+  .elp-logo-text .t2 {
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    display: block;
+  }
+  .elp-logo-text .t3 {
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    display: block;
+  }
+
+  /* Pie de página institucional */
+  .efsrt-footer {
+    position: absolute;
+    bottom: 22px;
+    left: 65px;
+    right: 65px;
+    padding-top: 8px;
+    border-top: 1px solid #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8.5pt;
+    color: #64748b;
+  }
+  .efsrt-footer .page-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #1e3a8a;
+    background: #eff6ff;
+    padding: 2px 10px;
+    border-radius: 10px;
+    border: 1px solid #bfdbfe;
+  }
+  .efsrt-footer .footer-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  /* Portada */
+  .efsrt-cover {
+    text-align: center;
+    padding: 0;
+  }
+  .efsrt-cover .escuela-top {
+    font-size: 10pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .efsrt-cover .titulo-doc {
+    font-size: 11pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 20px;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .efsrt-cover .carrera {
+    font-size: 10pt;
+    color: #334155;
+    margin-top: 4px;
+  }
+  .efsrt-cover .proyecto-titulo {
+    font-size: 15pt;
+    font-weight: 900;
+    color: #dc2626;
+    margin-top: 32px;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .efsrt-cover .empresa {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+  }
+  .efsrt-cover .autor-label {
+    font-size: 10pt;
+    color: #64748b;
+    margin-top: 44px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .efsrt-cover .autores {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 10px;
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+  .efsrt-cover .docente {
+    font-size: 10.5pt;
+    color: #0f172a;
+    margin-top: 22px;
+    font-weight: 600;
+  }
+  .efsrt-cover .fecha {
+    font-size: 10.5pt;
+    color: #0f172a;
+    margin-top: 44px;
+    font-weight: 600;
+  }
+
+  /* Índice */
+  .efsrt-toc h2 {
+    font-size: 13pt;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 22px;
+    text-transform: uppercase;
+    color: #1e3a8a;
+    letter-spacing: 0.04em;
+  }
+  .efsrt-toc ul { list-style: none; padding: 0; }
+  .efsrt-toc ul li {
+    display: flex; justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px dotted #cbd5e1;
+    font-size: 10.5pt;
+    color: #1a1a1a;
+  }
+  .efsrt-toc ul li.toc-main {
+    font-weight: 800;
+    color: #1e3a8a;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-bottom: 1.5px solid #1e3a8a;
+  }
+  .efsrt-toc ul li.toc-sub {
+    padding-left: 22px;
+    font-weight: 400;
+    font-size: 10pt;
+    color: #475569;
+    border-bottom: 1px dotted #e2e8f0;
+  }
+  .efsrt-toc .page-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #1e3a8a;
+    flex-shrink: 0;
+    padding-left: 8px;
+  }
+
+  /* Contenido */
+  .efsrt-content h1 {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #1e3a8a;
+    margin: 22px 0 16px 0;
+    text-transform: uppercase;
+    line-height: 1.35;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #1e3a8a;
+  }
+  .efsrt-content h2 {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 22px 0 10px 0;
+    line-height: 1.35;
+  }
+  .efsrt-content h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #334155;
+    margin: 16px 0 8px 0;
+  }
+  .efsrt-content p {
+    font-size: 10.5pt;
+    text-align: justify;
+    line-height: 1.65;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+  }
+  .efsrt-content ul, .efsrt-content ol {
+    font-size: 10.5pt;
+    padding-left: 22px;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+  }
+  .efsrt-content ul li, .efsrt-content ol li {
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+  .efsrt-content code {
+    background: #f1f5f9;
+    color: #1e3a8a;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    font-weight: 600;
+  }
+
+  /* Tablas */
+  .efsrt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 9.5pt;
+    color: #1a1a1a;
+  }
+  .efsrt-table th {
+    background: #1e3a8a;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #1e3a8a;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .efsrt-table td {
+    padding: 7px 10px;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+  }
+  .efsrt-table tr:nth-child(even) td { background: #f8fafc; }
+  .efsrt-table tbody tr:hover td { background: #eff6ff; }
+  .efsrt-table caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    padding-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Código */
+  .efsrt-code {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    overflow-x: auto;
+    margin: 10px 0;
+    line-height: 1.55;
+    border-left: 3px solid #dc2626;
+  }
+  .efsrt-code strong { color: #fbbf24; }
+  .efsrt-code em { color: #94a3b8; font-style: normal; }
+
+  /* Figuras */
+  .efsrt-figura {
+    text-align: center;
+    margin: 16px 0;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px dashed #94a3b8;
+    border-radius: 6px;
+  }
+  .efsrt-figura .fig-label {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .efsrt-figura .fig-caption {
+    font-size: 9pt;
+    color: #64748b;
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  /* Cajas destacadas */
+  .efsrt-box {
+    background: #eff6ff;
+    border-left: 4px solid #1e3a8a;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+    color: #1e3a8a;
+    border-radius: 0 6px 6px 0;
+  }
+  .efsrt-note {
+    background: #fffbeb;
+    border-left: 4px solid #d97706;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+    color: #78350f;
+    border-radius: 0 6px 6px 0;
+  }
+  .efsrt-ok {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+    color: #14532d;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* Acta */
+  .efsrt-acta {
+    border: 2px solid #1e3a8a;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    background: #f8fafc;
+    font-size: 10pt;
+  }
+  .efsrt-acta table { width: 100%; border-collapse: collapse; }
+  .efsrt-acta table td {
+    border: 1px solid #94a3b8;
+    padding: 8px 12px;
+    vertical-align: top;
+    font-size: 10pt;
+  }
+  .efsrt-acta table td:first-child {
+    background: #e0e7ff;
+    font-weight: 700;
+    width: 180px;
+    font-size: 9.5pt;
+    color: #1e3a8a;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .firmas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 40px;
+  }
+  .firma-box {
+    text-align: center;
+    padding-top: 44px;
+    border-top: 1px solid #1a1a1a;
+    font-size: 10pt;
+  }
+  .firma-box .nombre {
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .firma-box .rol {
+    font-size: 9pt;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* Botones EFSRT */
+  .efsrt-close {
+    position: fixed;
+    top: 24px; right: 24px;
+    z-index: 7500;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: all 0.25s ease;
+  }
+  .efsrt-close.active { display: flex; }
+  .efsrt-close:hover { transform: rotate(90deg); background: #dc2626; }
+
+  .efsrt-print {
+    position: fixed;
+    top: 24px; right: 84px;
+    z-index: 7500;
+    padding: 13px 22px;
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 12.5px; font-weight: 700;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: all 0.25s ease;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .efsrt-print.active { display: flex; }
+  .efsrt-print:hover { background: #0284c7; transform: translateY(-2px); }
+
+  /* Imprimir */
+  @media print {
+    @page { margin: 1.4cm; size: A4; }
+    body > *:not(.efsrt-doc) { display: none !important; }
+    body { background: #ffffff !important; }
+    .efsrt-doc {
+      position: static !important;
+      background: #ffffff !important;
+      padding: 0 !important;
+      display: block !important;
+    }
+    .efsrt-close, .efsrt-print { display: none !important; }
+    .efsrt-page {
+      box-shadow: none !important;
+      margin: 0 !important;
+      padding: 55px 65px !important;
+      page-break-after: always;
+      border-radius: 0;
+      min-height: 1080px;
+    }
+    .efsrt-page:last-child { page-break-after: auto; }
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      position: fixed !important;
+      left: -280px; top: 0; bottom: 0;
+      z-index: 900;
+      transition: left 0.3s ease;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10, 15, 30, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 800;
+    }
+    .sidebar-overlay.active { display: block; }
+  }
+  @media (max-width: 900px) {
+    .login-split { max-width: 500px; min-height: auto; }
+    .login-hero { padding: 36px 32px; }
+    .login-form-panel { padding: 36px 32px; }
+  }
+  @media (max-width: 480px) {
+    .login-hero { display: none; }
+    .login-form-panel { padding: 32px 24px; }
+    .efsrt-page { padding: 32px 20px 60px 20px; }
+    .efsrt-header { grid-template-columns: 40px 1fr 40px; gap: 8px; }
+    .elp-logo-large { flex-direction: column; gap: 10px; }
+    .elp-logo-text { text-align: center; }
+    .efsrt-footer { left: 20px; right: 20px; }
+    .firmas-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BLOBS -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-split">
+    <!-- HERO -->
+    <div class="login-hero">
+      <div class="diagonal-stripes"></div>
+      <div>
+        <div class="flex items-center gap-3.5 mb-8">
+          <div class="hero-logo"><span class="text-white font-black text-2xl relative z-10">Y</span></div>
+          <div>
+            <h1 class="text-white font-black text-[17px] tracking-tight leading-none">YAMEL SPORT</h1>
+            <p class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-semibold mt-1.5">Confecciones · Ayacucho</p>
+          </div>
+        </div>
+        <h2 class="text-white text-[28px] lg:text-[34px] font-black leading-[1.1] tracking-tight mb-4">
+          Sistema de<br>Gestión<br>
+          <span class="bg-gradient-to-r from-red-400 via-red-500 to-sky-400 bg-clip-text text-transparent">Integral ERP</span>
+        </h2>
+        <p class="text-slate-400 text-[13px] leading-relaxed mb-6 max-w-[380px]">
+          Gestión comercial, pedidos, inventario y producción para la industria textil deportiva.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="feature-chip"><i class="fa-solid fa-file-pen text-red-400"></i> Pedidos</span>
+          <span class="feature-chip"><i class="fa-solid fa-boxes-stacked text-sky-400"></i> Inventario</span>
+          <span class="feature-chip"><i class="fa-solid fa-industry text-emerald-400"></i> Taller</span>
+          <span class="feature-chip"><i class="fa-solid fa-chart-line text-amber-400"></i> Reportes</span>
+        </div>
+      </div>
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex -space-x-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-red-600 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold text-white">KQ</div>
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-sky-600 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold text-white">CC</div>
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold text-white">JR</div>
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold text-white">PG</div>
+          </div>
+          <p class="text-slate-400 text-[11px]">4 roles operativos · RBAC</p>
+        </div>
+        <p class="text-slate-500 text-[10.5px]">EFSRT I · EESSTP La Pontificia · 2026</p>
+      </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="login-form-panel">
+      <div class="mb-7">
+        <h3 class="text-white text-[20px] font-black tracking-tight mb-1.5">Iniciar sesión</h3>
+        <p class="text-slate-400 text-[12.5px]">Accede al sistema con tu perfil asignado</p>
+      </div>
+      <form onsubmit="event.preventDefault(); iniciarSesion();">
+        <div class="mb-4">
+          <label class="block text-slate-300 text-[10.5px] font-bold uppercase tracking-wider mb-2">Usuario</label>
+          <div class="relative input-wrapper">
+            <input type="text" id="loginUser" class="glass-input" value="k.quispe@yamelsport.pe" readonly>
+            <i class="fa-solid fa-user input-icon"></i>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label class="block text-slate-300 text-[10.5px] font-bold uppercase tracking-wider mb-2">Contraseña</label>
+          <div class="relative input-wrapper">
+            <input type="password" class="glass-input" value="yamelsport2026" readonly>
+            <i class="fa-solid fa-lock input-icon"></i>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-slate-300 text-[10.5px] font-bold uppercase tracking-wider mb-2.5">Perfil de acceso</label>
+          <div class="role-option selected" data-role="ventas" onclick="selectRole(this, 'ventas')">
+            <div class="role-radio"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-[12.5px] font-semibold truncate">🛒 Área de Ventas</p>
+              <p class="text-slate-400 text-[10.5px] mt-0.5">Encargada de Ventas</p>
+            </div>
+          </div>
+          <div class="role-option" data-role="almacen" onclick="selectRole(this, 'almacen')">
+            <div class="role-radio"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-[12.5px] font-semibold truncate">📦 Área de Almacén</p>
+              <p class="text-slate-400 text-[10.5px] mt-0.5">Encargado de Almacén</p>
+            </div>
+          </div>
+          <div class="role-option" data-role="produccion" onclick="selectRole(this, 'produccion')">
+            <div class="role-radio"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-[12.5px] font-semibold truncate">🧵 Área de Taller</p>
+              <p class="text-slate-400 text-[10.5px] mt-0.5">Encargado de Taller</p>
+            </div>
+          </div>
+          <div class="role-option" data-role="gerencia" onclick="selectRole(this, 'gerencia')">
+            <div class="role-radio"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-[12.5px] font-semibold truncate">👑 Propietaria</p>
+              <p class="text-slate-400 text-[10.5px] mt-0.5">Gerencia General</p>
+            </div>
+          </div>
+        </div>
+        <div class="hint-box" id="hintBox">
+          <i class="fa-solid fa-circle-info text-sky-400 text-sm mt-0.5"></i>
+          <div class="flex-1 min-w-0">
+            <p class="text-[11.5px] font-bold text-white mb-0.5" id="hintTitle">Encargada de Ventas</p>
+            <p class="text-[11px] text-slate-300 leading-relaxed" id="hintDesc">Acceso a pedidos, cotizaciones y pagos. Sin edición de Kardex ni taller.</p>
+          </div>
+        </div>
+        <button type="submit" class="btn-login">
+          <i class="fa-solid fa-right-to-bracket text-[13px] mr-1"></i> INICIAR SESIÓN
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <aside class="sidebar w-64 glass-dark flex flex-col fixed h-full z-40 border-r border-white/10" id="sidebar">
+    <div class="p-5 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg shadow-red-500/30 relative">
+          <span class="text-white font-black text-lg">Y</span>
+          <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent"></div>
+        </div>
+        <div>
+          <h1 class="text-white font-black text-[13px] leading-tight tracking-tight">YAMEL SPORT</h1>
+          <p class="text-slate-400 text-[10px] uppercase tracking-wider font-semibold">Confecciones · Ayacucho</p>
+        </div>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto p-3" id="sidebarNav"></nav>
+    <div class="p-4 border-t border-white/10">
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl p-3 border border-white/10">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-[11px]" id="userAvatar">KQ</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-white text-[12px] font-semibold truncate" id="userName">Karina Quispe</p>
+          <p class="text-slate-400 text-[10.5px] truncate" id="userRole">Ventas</p>
+        </div>
+        <button onclick="cerrarSesion()" title="Cerrar sesión" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-500/30 flex items-center justify-center text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-power-off text-[11px]"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="main-content lg:ml-64 min-h-screen relative z-10">
+    <header class="sticky top-0 z-30 glass border-b border-white/10">
+      <div class="flex items-center gap-4 px-5 py-3.5">
+        <button onclick="toggleSidebar()" class="lg:hidden text-slate-300 hover:text-white transition">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <div class="hidden md:block">
+          <p class="text-[10.5px] text-slate-400 uppercase tracking-wider font-semibold">Panel</p>
+          <p class="text-[13px] font-bold text-white" id="topbarTitle">Dashboard</p>
+        </div>
+        <div class="flex-1 max-w-md ml-auto md:ml-6 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" placeholder="Buscar pedido, cliente, insumo..." class="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-[12.5px] text-white placeholder-slate-500 focus:bg-white/10 focus:border-red-500/40 focus:outline-none transition-all backdrop-blur-md">
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+          <!-- BOTÓN EFSRT (ahora en el header) -->
+          <button onclick="abrirEFSRT()" class="hidden md:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-500/20 to-cyan-500/20 hover:from-sky-500/30 hover:to-cyan-500/30 border border-sky-400/30 text-sky-200 hover:text-white transition text-[11.5px] font-bold uppercase tracking-wider">
+            <i class="fa-solid fa-file-lines text-[13px]"></i>
+            <span>Formato EFSRT</span>
+          </button>
+          <!-- BOTÓN EFSRT versión mobile -->
+          <button onclick="abrirEFSRT()" class="md:hidden w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-200">
+            <i class="fa-solid fa-file-lines text-[13px]"></i>
+          </button>
+
+          <button onclick="switchView('inventario')" class="relative w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition">
+            <i class="fa-solid fa-triangle-exclamation text-[13px]"></i>
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-900">3</span>
+          </button>
+          <button class="relative w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition">
+            <i class="fa-solid fa-bell text-[13px]"></i>
+            <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-red-500"></span>
+          </button>
+          <div class="hidden md:flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-[11px] font-semibold text-white backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="topbarRoleBadge">Ventas</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="p-5 lg:p-7" id="mainContent"></main>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modalCliente">
+  <div class="modal-content p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-[17px] font-black text-white">Registrar cliente</h3>
+      <button onclick="closeModal('modalCliente')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark text-[13px]"></i></button>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modalCliente'); mostrarToast('Cliente registrado correctamente', 'success');">
+      <div class="space-y-4">
+        <div><label class="form-label">Razón social / Nombre</label><input type="text" class="form-input" placeholder="Ej. I.E. María Parado de Bellido" required></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">Tipo</label><select class="form-select" required><option value="">Seleccionar</option><option>Institucional</option><option>Deportivo</option><option>Particular</option></select></div>
+          <div><label class="form-label">RUC / DNI</label><input type="text" class="form-input" placeholder="20XXXXXXXXX"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">WhatsApp</label><input type="text" class="form-input" placeholder="9XX XXX XXX" required></div>
+          <div><label class="form-label">Correo</label><input type="email" class="form-input" placeholder="correo@ejemplo.com"></div>
+        </div>
+        <div><label class="form-label">Dirección</label><input type="text" class="form-input" placeholder="Av. / Jr. / Calle"></div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="closeModal('modalCliente')" class="btn btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn btn-primary flex-1">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalPago">
+  <div class="modal-content p-6">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h3 class="text-[17px] font-black text-white">Registrar pago inicial</h3>
+        <p class="text-[11.5px] text-slate-400 mt-0.5">PED-2026-0146 · Club Defensor Ayacucho</p>
+      </div>
+      <button onclick="closeModal('modalPago')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark text-[13px]"></i></button>
+    </div>
+    <div class="glass rounded-xl p-4 mb-5">
+      <div class="flex justify-between items-baseline mb-1.5"><span class="text-[11.5px] text-slate-400">Total cotizado</span><span class="text-[13px] font-semibold text-white">S/ 2,850.00</span></div>
+      <div class="flex justify-between items-baseline"><span class="text-[12px] text-slate-300 font-semibold">Adelanto requerido (50%)</span><span class="text-[24px] font-black text-white">S/ 1,425.00</span></div>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modalPago'); confirmarPago();">
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">Medio de pago</label><select class="form-select" required><option>Yape</option><option>Plin</option><option>Transferencia BCP</option><option>Transferencia BBVA</option><option>Efectivo</option></select></div>
+          <div><label class="form-label">Monto</label><input type="text" class="form-input font-bold" value="1,425.00" required></div>
+        </div>
+        <div><label class="form-label">N° de operación</label><input type="text" class="form-input font-mono" placeholder="08765412" required></div>
+        <div>
+          <label class="form-label">Comprobante</label>
+          <div class="border-2 border-dashed border-white/15 rounded-xl p-5 text-center hover:border-red-500/50 transition cursor-pointer backdrop-blur-md bg-white/5">
+            <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-xl mb-1.5"></i>
+            <p class="text-[11.5px] text-slate-400">Subir captura de Yape / Plin / Voucher</p>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-3 flex gap-2 border border-sky-400/20">
+          <i class="fa-solid fa-circle-info text-sky-400 text-sm mt-0.5"></i>
+          <p class="text-[11.5px] text-slate-300 leading-relaxed">Al confirmar, el sistema <strong class="text-white">reservará los insumos</strong> y derivará el pedido a producción.</p>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="closeModal('modalPago')" class="btn btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn btn-emerald flex-1"><i class="fa-solid fa-check-double text-[12px]"></i> Confirmar y reservar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalFicha">
+  <div class="modal-content modal-lg p-6">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h3 class="text-[17px] font-black text-white">Ficha técnica de taller</h3>
+        <p class="text-[11.5px] text-slate-400 mt-0.5" id="fichaPedido">PED-2026-0145</p>
+      </div>
+      <button onclick="closeModal('modalFicha')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark text-[13px]"></i></button>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      <div class="glass rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Tallas</p><p class="font-bold text-white text-[12.5px]">S:10 M:20 L:15 XL:5</p></div>
+      <div class="glass rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Tela</p><p class="font-bold text-white text-[12.5px]">Dry-Fit 180g</p></div>
+      <div class="glass rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Colores</p><p class="font-bold text-white text-[12.5px]">Azul + Rojo</p></div>
+      <div class="glass rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Entrega</p><p class="font-bold text-red-300 text-[12.5px]">05/10/2026</p></div>
+    </div>
+    <div class="mb-5">
+      <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">Personalización</p>
+      <div class="glass rounded-xl p-4 text-[12.5px] text-slate-200 leading-relaxed space-y-1.5">
+        <p>· Sublimado completo con escudo institucional en el pecho</p>
+        <p>· Nombres y números en la espalda</p>
+        <p>· Ribete rojo en mangas y cuello</p>
+        <p>· Etiqueta interna con logo Yamel Sport</p>
+      </div>
+    </div>
+    <div class="glass rounded-xl p-4 flex items-center justify-between border border-emerald-400/20">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <div><p class="text-[12.5px] font-bold text-white">Insumos reservados</p><p class="text-[11px] text-slate-400">Stock descontado del Kardex</p></div>
+      </div>
+      <button onclick="closeModal('modalFicha'); mostrarToast('Ficha enviada al taller', 'success')" class="btn btn-secondary text-[12px]"><i class="fa-solid fa-print text-[11px]"></i> Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalMovimiento">
+  <div class="modal-content p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="text-[17px] font-black text-white">Registrar movimiento</h3>
+      <button onclick="closeModal('modalMovimiento')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark text-[13px]"></i></button>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modalMovimiento'); mostrarToast('Movimiento registrado en Kardex', 'success');">
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">Tipo</label><select class="form-select" required><option>Entrada</option><option>Salida</option><option>Ajuste</option></select></div>
+          <div><label class="form-label">Insumo</label><select class="form-select" required><option>Tela Dry-Fit Azul</option><option>Tela Winn Fresh Roja</option><option>Hilo Poliéster Blanco</option><option>Tintas Sublimado CMYK</option></select></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">Cantidad</label><input type="number" class="form-input" placeholder="0" required></div>
+          <div><label class="form-label">Costo unitario (S/)</label><input type="number" class="form-input" placeholder="0.00"></div>
+        </div>
+        <div><label class="form-label">Proveedor / Referencia</label><input type="text" class="form-input" placeholder="Textiles del Sur SAC · F001-000123"></div>
+        <div><label class="form-label">Observaciones</label><textarea class="form-textarea" rows="2" placeholder="Motivo del movimiento..."></textarea></div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="closeModal('modalMovimiento')" class="btn btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn btn-emerald flex-1"><i class="fa-solid fa-check text-[12px]"></i> Registrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalEstadoTaller">
+  <div class="modal-content p-6">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h3 class="text-[17px] font-black text-white">Actualizar estado</h3>
+        <p class="text-[11.5px] text-slate-400 mt-0.5" id="estadoPedidoNum">PED-2026-0145</p>
+      </div>
+      <button onclick="closeModal('modalEstadoTaller')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark text-[13px]"></i></button>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modalEstadoTaller'); mostrarToast('Estado actualizado correctamente', 'success');">
+      <div class="space-y-4">
+        <div><label class="form-label">Nuevo estado</label><select class="form-select" required><option>En Corte</option><option>En Sublimado</option><option>En Costura</option><option>En Acabados</option><option>Listo para Despacho</option></select></div>
+        <div><label class="form-label">Responsable</label><input type="text" class="form-input" value="Jhan Ramos" disabled></div>
+        <div><label class="form-label">Observaciones</label><textarea class="form-textarea" rows="3" placeholder="Ej. Corte completado, inicio de sublimado el 30/09..."></textarea></div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button type="button" onclick="closeModal('modalEstadoTaller')" class="btn btn-secondary flex-1">Cancelar</button>
+        <button type="submit" class="btn btn-primary flex-1">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="toastMsg">Operación completada</span>
+</div>
+
+<!-- ============================================================
+     DOCUMENTO EFSRT COMPLETO (15 páginas)
+     ============================================================ -->
+<button class="efsrt-close" id="efsrtClose" onclick="cerrarEFSRT()">
+  <i class="fa-solid fa-xmark"></i>
+</button>
+<button class="efsrt-print" id="efsrtPrint" onclick="window.print()">
+  <i class="fa-solid fa-print"></i> Imprimir / PDF
+</button>
+
+<div class="efsrt-doc" id="efsrtDoc">
+
+  <!-- ============ PÁGINA 1: PORTADA ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-cover">
+      <!-- Logo ELP grande -->
+      <div class="elp-logo-large">
+        <div class="elp-logo-bars">
+          <div class="elp-logo-bar-1"></div>
+          <div class="elp-logo-bar-2"></div>
+          <div class="elp-logo-bar-3"></div>
+          <div class="elp-logo-elp">elp</div>
+        </div>
+        <div class="elp-logo-text">
+          <span class="t1">ESCUELA</span>
+          <span class="t2">SUPERIOR</span>
+          <span class="t3">LA PONTIFICIA</span>
+        </div>
+      </div>
+
+      <div class="escuela-top" style="margin-top:30px;">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA<br>
+        <span style="font-size:9pt; font-weight:600;">DIRECCIÓN ACADÉMICA</span>
+      </div>
+
+      <div class="titulo-doc">
+        INFORME EJECUTIVO DE EXPERIENCIAS FORMATIVAS<br>
+        EN SITUACIONES REALES DE TRABAJO I
+      </div>
+      <div class="carrera">
+        de la carrera profesional de Ingeniería de Sistemas de Información
+      </div>
+
+      <div style="height:1px; background:#cbd5e1; margin:26px auto; width:60%;"></div>
+
+      <div style="font-size:10pt; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;">
+        Maqueta Web / Prototipo Interactivo
+      </div>
+      <div class="proyecto-titulo">
+        Sistema Web de Gestión Comercial,<br>
+        Pedidos, Inventario y Producción
+      </div>
+      <div class="empresa">
+        CONFECCIONES YAMEL SPORT
+      </div>
+      <div style="font-size:9.5pt; color:#64748b; margin-top:6px; font-weight:500;">
+        Ayacucho — Perú
+      </div>
+
+      <div class="autor-label">Desarrollado por los estudiantes:</div>
+      <div class="autores">
+        SACSARA CCONISLLA, Roger Frank<br>
+        QUISPE RAMOS, Karina Nelly<br>
+        QUISPE CENTENO, Jhan Carlos
+      </div>
+
+      <div class="docente">
+        <span style="color:#64748b; font-weight:500;">Docente responsable:</span><br>
+        <strong>Ing. José Luis Rodríguez Abad</strong>
+      </div>
+
+      <div class="fecha">
+        Huamanga — Ayacucho<br>
+        Septiembre de 2026
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 1</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 2: ÍNDICE ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-toc">
+      <h2>Índice de Contenido</h2>
+      <ul>
+        <li class="toc-main"><span>1. Introducción</span><span class="page-num">3</span></li>
+        <li class="toc-sub"><span>1.1 Propósito del documento</span><span class="page-num">3</span></li>
+        <li class="toc-sub"><span>1.2 Alcance del prototipo</span><span class="page-num">3</span></li>
+        <li class="toc-sub"><span>1.3 Metodología aplicada</span><span class="page-num">4</span></li>
+        <li class="toc-sub"><span>1.4 Referencias documentales</span><span class="page-num">4</span></li>
+
+        <li class="toc-main"><span>2. Objetivos del Prototipo</span><span class="page-num">5</span></li>
+        <li class="toc-sub"><span>2.1 Objetivo general</span><span class="page-num">5</span></li>
+        <li class="toc-sub"><span>2.2 Objetivos específicos</span><span class="page-num">5</span></li>
+
+        <li class="toc-main"><span>3. Arquitectura del Prototipo</span><span class="page-num">6</span></li>
+        <li class="toc-sub"><span>3.1 Estilo visual Glassmorphism</span><span class="page-num">6</span></li>
+        <li class="toc-sub"><span>3.2 Paleta de colores corporativa</span><span class="page-num">6</span></li>
+        <li class="toc-sub"><span>3.3 Stack tecnológico</span><span class="page-num">7</span></li>
+        <li class="toc-sub"><span>3.4 Arquitectura SPA</span><span class="page-num">7</span></li>
+
+        <li class="toc-main"><span>4. Matriz de Roles y Permisos (RBAC)</span><span class="page-num">8</span></li>
+        <li class="toc-sub"><span>4.1 Roles operativos del sistema</span><span class="page-num">8</span></li>
+        <li class="toc-sub"><span>4.2 Permisos por rol</span><span class="page-num">8</span></li>
+        <li class="toc-sub"><span>4.3 Restricciones de acceso</span><span class="page-num">9</span></li>
+
+        <li class="toc-main"><span>5. Módulos del Sistema</span><span class="page-num">10</span></li>
+        <li class="toc-sub"><span>5.1 Dashboard Comercial y 360°</span><span class="page-num">10</span></li>
+        <li class="toc-sub"><span>5.2 Módulo de Clientes</span><span class="page-num">10</span></li>
+        <li class="toc-sub"><span>5.3 Registro de Pedidos TO-BE</span><span class="page-num">11</span></li>
+        <li class="toc-sub"><span>5.4 Cotizador Automático</span><span class="page-num">11</span></li>
+        <li class="toc-sub"><span>5.5 Inventario y Kardex</span><span class="page-num">12</span></li>
+        <li class="toc-sub"><span>5.6 Panel de Producción</span><span class="page-num">12</span></li>
+        <li class="toc-sub"><span>5.7 Reportes Gerenciales</span><span class="page-num">13</span></li>
+
+        <li class="toc-main"><span>6. Reglas de Negocio Implementadas</span><span class="page-num">13</span></li>
+        <li class="toc-main"><span>7. Matriz de Trazabilidad</span><span class="page-num">14</span></li>
+        <li class="toc-main"><span>8. Acta de Validación del Prototipo</span><span class="page-num">15</span></li>
+        <li class="toc-main"><span>9. Conclusiones y Recomendaciones</span><span class="page-num">16</span></li>
+      </ul>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 2</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 3: INTRODUCCIÓN ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>1. Introducción</h1>
+
+      <h2>1.1 Propósito del documento</h2>
+      <p>
+        El presente documento tiene como propósito documentar y describir la <strong>Maqueta Web / Prototipo Interactivo</strong> del Sistema Web de Gestión Comercial, Pedidos, Inventario y Producción desarrollado para la empresa <strong>Confecciones Yamel Sport</strong> de la ciudad de Ayacucho, en el marco de la asignatura Experiencias Formativas en Situaciones Reales de Trabajo I (EFSRT I) de la carrera profesional de Ingeniería de Sistemas de Información de la Escuela de Educación Superior Tecnológica Privada La Pontificia.
+      </p>
+      <p>
+        El prototipo constituye un artefacto complementario a los cuatro (4) documentos base del proyecto: el Estudio de Empresa, el Análisis de Procesos (AS-IS y TO-BE), el Documento de Visión RUP y el Documento de Casos de Uso de Negocio. Permite visualizar de forma tangible la propuesta TO-BE descrita en el Análisis de Procesos y materializa el alcance del MVP definido por el equipo de trabajo.
+      </p>
+
+      <h2>1.2 Alcance del prototipo</h2>
+      <p>
+        El prototipo implementa una <strong>Single Page Application (SPA)</strong> interactiva que simula las funcionalidades críticas del sistema, incluyendo:
+      </p>
+      <ul>
+        <li>Pantalla de <strong>Login con RBAC</strong> (Control de Acceso Basado en Roles) con 4 perfiles operativos diferenciados</li>
+        <li><strong>Dashboard Comercial y Gerencial 360°</strong> con KPIs e indicadores de gestión</li>
+        <li><strong>Módulo de Clientes</strong> con registro y consulta de clientes institucionales, deportivos y particulares</li>
+        <li><strong>Registro de Pedidos TO-BE</strong> con matriz dinámica de tallas S, M, L, XL y personalización</li>
+        <li><strong>Cotizador Automático</strong> con cálculo de descuentos (0%, 5%, 10%, 15%) y generación de proforma</li>
+        <li><strong>Control de Inventario y Kardex</strong> con cálculo automático de Stock Libre (Físico − Reservado)</li>
+        <li><strong>Panel de Producción</strong> con cola de pedidos derivados automáticamente desde Ventas</li>
+        <li><strong>Reportes Gerenciales</strong> con consolidados de ventas, top de clientes y rotación de insumos</li>
+      </ul>
+
+      <div class="efsrt-box">
+        <strong>Nota metodológica:</strong> El prototipo no constituye la versión final del software productivo. Es una maqueta visual-funcional que permite validar la experiencia de usuario (UX), los flujos operativos y las reglas de negocio simuladas en JavaScript, antes de proceder con la implementación del sistema definitivo.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 3</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 4: METODOLOGÍA Y REFERENCIAS ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>1.3 Metodología aplicada</h2>
+      <p>
+        El diseño y desarrollo del prototipo se realizó siguiendo los lineamientos de la metodología <strong>Rational Unified Process (RUP)</strong> y el estándar <strong>ISO/IEC/IEEE 29148:2018</strong> para la especificación de requisitos. El trabajo se basó en los cuatro (4) artefactos previos del proyecto:
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 1. Artefactos base del proyecto Yamel Sport</caption>
+        <thead>
+          <tr>
+            <th style="width:40px;">N°</th>
+            <th>Documento</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Estudio de Empresa</strong></td><td>Identidad, misión, visión, valores, cadena de valor y proyectos estratégicos</td></tr>
+          <tr><td>2</td><td><strong>Análisis de Procesos</strong></td><td>Diagnóstico AS-IS y propuesta TO-BE con procedimientos PC-030, PC-031, PC-024, PC-043</td></tr>
+          <tr><td>3</td><td><strong>Documento de Visión RUP</strong></td><td>Alcance, stakeholders, roadmap, atributos de calidad y priorización MoSCoW</td></tr>
+          <tr><td>4</td><td><strong>Casos de Uso de Negocio</strong></td><td>BUC-001, BUC-002, BUC-003 con reglas de negocio RB-001 a RB-011</td></tr>
+        </tbody>
+      </table>
+
+      <h2>1.4 Referencias documentales</h2>
+      <ol>
+        <li>Escuela de Educación Superior Tecnológica Privada La Pontificia. (2026). <em>Estudio de Empresa — Confecciones Yamel Sport</em>. Huamanga, Ayacucho.</li>
+        <li>Escuela de Educación Superior Tecnológica Privada La Pontificia. (2026). <em>Análisis de Procesos — Gestión de Pedidos e Inventario</em>. Huamanga, Ayacucho.</li>
+        <li>Escuela de Educación Superior Tecnológica Privada La Pontificia. (2026). <em>Documento de Visión RUP — Sistema Web de Gestión de Pedidos e Inventario</em>. Huamanga, Ayacucho.</li>
+        <li>Escuela de Educación Superior Tecnológica Privada La Pontificia. (2026). <em>Documento de Casos de Uso de Negocio — Confecciones Yamel Sport</em>. Huamanga, Ayacucho.</li>
+        <li>ISO/IEC/IEEE 29148:2018. <em>Systems and software engineering — Life cycle processes — Requirements engineering</em>.</li>
+        <li>Rational Unified Process (RUP). <em>Artefactos de análisis y diseño</em>.</li>
+      </ol>
+
+      <div class="efsrt-ok">
+        <strong>Ubicación del proyecto:</strong> La maqueta fue desarrollada en un único archivo HTML5 autónomo (<code>sistema_yamel_sport.html</code>), el cual puede ser ejecutado directamente en cualquier navegador moderno sin requerir instalación, servidor backend ni conexión a base de datos.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 4</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 5: OBJETIVOS ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>2. Objetivos del Prototipo</h1>
+
+      <h2>2.1 Objetivo general</h2>
+      <p>
+        Diseñar y desarrollar una maqueta web interactiva que materialice visual y funcionalmente el alcance del MVP del Sistema de Gestión Comercial, Pedidos, Inventario y Producción para Confecciones Yamel Sport, permitiendo validar la experiencia de usuario, los flujos operativos y las reglas de negocio con los stakeholders antes de la fase de implementación productiva.
+      </p>
+
+      <h2>2.2 Objetivos específicos</h2>
+
+      <table class="efsrt-table">
+        <caption>Tabla 2. Objetivos específicos del prototipo</caption>
+        <thead>
+          <tr>
+            <th style="width:50px;">N°</th>
+            <th>Objetivo específico</th>
+            <th style="width:90px;">Prioridad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Implementar autenticación con 4 roles diferenciados aplicando RBAC</td><td>Alta</td></tr>
+          <tr><td>2</td><td>Desarrollar arquitectura SPA con navegación dinámica sin recarga</td><td>Alta</td></tr>
+          <tr><td>3</td><td>Diseñar interfaz Glassmorphism alineada a la identidad de Yamel Sport</td><td>Alta</td></tr>
+          <tr><td>4</td><td>Simular las reglas de negocio críticas RN-01 a RN-05 en JavaScript</td><td>Alta</td></tr>
+          <tr><td>5</td><td>Validar la usabilidad del formulario TO-BE con matriz dinámica de tallas</td><td>Media</td></tr>
+          <tr><td>6</td><td>Representar visualmente el Kardex con cálculo de Stock Libre y alertas</td><td>Media</td></tr>
+          <tr><td>7</td><td>Implementar panel de producción con cola de pedidos derivados automáticamente</td><td>Media</td></tr>
+        </tbody>
+      </table>
+
+      <div class="efsrt-note">
+        <strong>Criterio de éxito:</strong> El prototipo es considerado exitoso si un usuario sin conocimiento previo del sistema puede, en menos de 5 minutos y sin asistencia externa, iniciar sesión con cualquiera de los 4 roles, navegar entre los módulos disponibles, registrar un pedido y visualizar el flujo completo hasta el panel de producción.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 5</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 6: ARQUITECTURA VISUAL ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>3. Arquitectura del Prototipo</h1>
+
+      <h2>3.1 Estilo visual Glassmorphism (Glass UI)</h2>
+      <p>
+        El prototipo adopta el estilo visual <strong>Glassmorphism (Frosted Glass)</strong>, caracterizado por tarjetas translúcidas con desenfoque de fondo, bordes finos con iluminación vítrea y una atmósfera oscura profunda con acentos de color radiales en segundo plano.
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 3. Elementos visuales del estilo Glassmorphism</caption>
+        <thead>
+          <tr>
+            <th>Elemento visual</th>
+            <th>Implementación técnica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Fondo atmósfera</td><td>Gradiente radial multicapa + blobs animados con <code>filter: blur(100px)</code></td></tr>
+          <tr><td>Contenedores glass</td><td><code>backdrop-filter: blur(20-32px)</code> + <code>rgba(255,255,255,0.05-0.1)</code></td></tr>
+          <tr><td>Bordes vítreos</td><td><code>border: 1px solid rgba(255,255,255,0.1-0.2)</code></td></tr>
+          <tr><td>Bisel luminoso superior</td><td><code>inset 0 1px 0 rgba(255,255,255,0.15)</code></td></tr>
+          <tr><td>Grid sutil de fondo</td><td>Líneas 1px con <code>mask-image</code> radial</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3.2 Paleta de colores corporativa</h2>
+
+      <table class="efsrt-table">
+        <caption>Tabla 4. Paleta de colores del sistema</caption>
+        <thead>
+          <tr>
+            <th style="width:150px;">Rol funcional</th>
+            <th style="width:120px;">Código HEX</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Acento principal</td><td><code>#ef4444 / #dc2626</code></td><td>Botones primarios, branding, alertas críticas</td></tr>
+          <tr><td>Acento secundario</td><td><code>#38bdf8 / #0ea5e9</code></td><td>Información, badges info, links</td></tr>
+          <tr><td>Éxito</td><td><code>#10b981 / #16a34a</code></td><td>Confirmaciones, estados OK</td></tr>
+          <tr><td>Alerta</td><td><code>#f59e0b / #d97706</code></td><td>Advertencias de stock, prioridad media</td></tr>
+          <tr><td>Fondo base</td><td><code>#0a0f1e → #0f172a</code></td><td>Gradiente atmosférico</td></tr>
+          <tr><td>Glass estándar</td><td><code>rgba(255,255,255,0.05)</code></td><td>Tarjetas y paneles</td></tr>
+          <tr><td>Texto principal</td><td><code>#ffffff</code></td><td>Títulos y contenido</td></tr>
+          <tr><td>Texto secundario</td><td><code>#94a3b8</code></td><td>Etiquetas y textos auxiliares</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 6</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 7: STACK Y SPA ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>3.3 Stack tecnológico frontend</h2>
+
+      <table class="efsrt-table">
+        <caption>Tabla 5. Stack tecnológico del prototipo</caption>
+        <thead>
+          <tr>
+            <th style="width:120px;">Capa</th>
+            <th>Tecnología</th>
+            <th>Propósito</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Estructura</td><td>HTML5 semántico</td><td>Marcado de vistas y modales</td></tr>
+          <tr><td>Estilos</td><td>Tailwind CSS (CDN) + CSS personalizado</td><td>Diseño responsive y Glass UI</td></tr>
+          <tr><td>Tipografía</td><td>Inter + JetBrains Mono (Google Fonts)</td><td>Jerarquía tipográfica y legibilidad</td></tr>
+          <tr><td>Iconografía</td><td>FontAwesome 6.5 (CDN)</td><td>Iconos operativos del sistema</td></tr>
+          <tr><td>Interactividad</td><td>Vanilla JavaScript (ES6+)</td><td>SPA, RBAC, reglas de negocio</td></tr>
+          <tr><td>Persistencia</td><td>Estado en memoria (objeto APP)</td><td>Simulación de sesión activa</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3.4 Arquitectura SPA</h2>
+      <p>
+        La aplicación sigue el patrón de <strong>Arquitectura de Página Única (SPA)</strong> sin framework de enrutamiento externo. La navegación se gestiona mediante las siguientes funciones JavaScript:
+      </p>
+
+      <div class="efsrt-code">
+<strong>const</strong> APP = {<br>
+&nbsp;&nbsp;role: <em>"ventas"</em>,<br>
+&nbsp;&nbsp;user: <strong>null</strong>,<br>
+&nbsp;&nbsp;currentView: <em>"dashboard"</em><br>
+};<br><br>
+<strong>function</strong> switchView(viewName) {<br>
+&nbsp;&nbsp;document.querySelectorAll(<em>'.view'</em>).forEach(v => v.classList.remove(<em>'active'</em>));<br>
+&nbsp;&nbsp;document.getElementById(<em>'view-'</em> + viewName).classList.add(<em>'active'</em>);<br>
+&nbsp;&nbsp;updateSidebarActive(viewName);<br>
+}
+      </div>
+
+      <table class="efsrt-table">
+        <caption>Tabla 6. Funciones principales de la SPA</caption>
+        <thead>
+          <tr>
+            <th style="width:220px;">Función</th>
+            <th>Responsabilidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>switchView(viewName)</code></td><td>Controla la visibilidad de las vistas mediante clase CSS <code>.active</code></td></tr>
+          <tr><td><code>iniciarSesion()</code></td><td>Valida el rol seleccionado y carga la app con permisos correspondientes</td></tr>
+          <tr><td><code>generarSidebar()</code></td><td>Filtra los ítems del menú lateral según el rol activo</td></tr>
+          <tr><td><code>renderView(viewName)</code></td><td>Retorna el HTML dinámico de cada vista mediante template literals</td></tr>
+          <tr><td><code>openModal(id)</code> / <code>closeModal(id)</code></td><td>Controla la apertura y cierre de modales</td></tr>
+          <tr><td><code>mostrarToast(msg, tipo)</code></td><td>Sistema de notificaciones flotantes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 7</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 8: RBAC ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>4. Matriz de Roles y Permisos (RBAC)</h1>
+
+      <h2>4.1 Roles operativos del sistema</h2>
+      <p>
+        El sistema implementa 4 roles diferenciados, cada uno con credenciales de prueba, menú lateral filtrado dinámicamente y restricciones específicas de acceso a vistas y funcionalidades.
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 7. Roles operativos del sistema con credenciales de prueba</caption>
+        <thead>
+          <tr>
+            <th style="width:180px;">Rol</th>
+            <th>Usuario</th>
+            <th>Correo electrónico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>🛒 Encargada de Ventas</td><td>Karina Quispe</td><td><code>k.quispe@yamelsport.pe</code></td></tr>
+          <tr><td>📦 Encargado de Almacén</td><td>Carlos Centeno</td><td><code>c.centeno@yamelsport.pe</code></td></tr>
+          <tr><td>🧵 Encargado de Taller</td><td>Jhan Ramos</td><td><code>j.ramos@yamelsport.pe</code></td></tr>
+          <tr><td>👑 Gerencia General</td><td>Propietaria</td><td><code>gerencia@yamelsport.pe</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2>4.2 Permisos por rol</h2>
+
+      <table class="efsrt-table">
+        <caption>Tabla 8. Matriz de permisos por rol</caption>
+        <thead>
+          <tr>
+            <th style="width:110px;">Rol</th>
+            <th>Vistas permitidas</th>
+            <th style="width:170px;">Restricciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🛒 Ventas</strong></td>
+            <td>Dashboard Comercial · Pedidos · Cotizaciones · Clientes · Consultar Stock · Pagos</td>
+            <td>No edita Kardex · No cambia estados de taller · No ve utilidades</td>
+          </tr>
+          <tr>
+            <td><strong>📦 Almacén</strong></td>
+            <td>Dashboard Almacén · Inventario y Kardex · Alertas de Stock</td>
+            <td>No ve precios · No emite cotizaciones · No registra cobros</td>
+          </tr>
+          <tr>
+            <td><strong>🧵 Producción</strong></td>
+            <td>Dashboard Taller · Cola de Producción · Fichas Técnicas</td>
+            <td>No ve montos · No accede al Kardex · No administra clientes</td>
+          </tr>
+          <tr>
+            <td><strong>👑 Gerencia</strong></td>
+            <td>Acceso 360° a todos los módulos · Reportes · Configuración</td>
+            <td>Supervisión de lectura sobre todas las operaciones</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 8</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 9: RESTRICCIONES RBAC ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>4.3 Restricciones de acceso</h2>
+      <p>
+        Las restricciones se aplican en dos niveles complementarios dentro del prototipo:
+      </p>
+
+      <ol>
+        <li><strong>Filtrado del menú lateral:</strong> cada rol recibe únicamente los ítems de menú que le corresponden, definidos en el objeto <code>USERS</code>.</li>
+        <li><strong>Control de vistas en el renderizador:</strong> la función <code>switchView()</code> valida que la vista solicitada esté dentro del menú del rol activo antes de renderizarla.</li>
+      </ol>
+
+      <div class="efsrt-code">
+<strong>const</strong> USERS = {<br>
+&nbsp;&nbsp;<em>ventas</em>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;nombre: <em>"Karina Quispe"</em>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rol: <em>"Ventas"</em>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;menu: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: <em>"dashboard"</em>, label: <em>"Dashboard"</em> },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: <em>"pedidos"</em>, label: <em>"Pedidos"</em> },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ id: <em>"cotizaciones"</em>, label: <em>"Cotizaciones"</em> },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>// ... más items</em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<em>// ... más roles</em><br>
+};
+      </div>
+
+      <div class="efsrt-box">
+        <strong>Beneficio del RBAC:</strong> La aplicación de RBAC asegura que cada usuario acceda únicamente a las funcionalidades relacionadas con su rol operativo, reduciendo el riesgo de errores humanos, evitando la exposición innecesaria de información sensible (como montos de dinero a personal de taller) y alineando el sistema con los procedimientos operativos reales de Confecciones Yamel Sport.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 9</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 10: MÓDULOS 1 ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>5. Módulos del Sistema</h1>
+
+      <h2>5.1 Dashboard Comercial y 360°</h2>
+      <p>
+        El Dashboard presenta una vista consolidada del estado operativo del negocio mediante tarjetas KPI con estilo Glassmorphism. Los indicadores son los siguientes:
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 9. Indicadores del Dashboard</caption>
+        <thead>
+          <tr>
+            <th>KPI</th>
+            <th style="width:100px;">Valor</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Pedidos Activos</td><td>12</td><td>Pedidos en estado pendiente o cotizado</td></tr>
+          <tr><td>Cotizaciones Emitidas</td><td>18</td><td>Proformas enviadas a clientes</td></tr>
+          <tr><td>Stock Crítico</td><td>3</td><td>Insumos con Stock Libre ≤ Stock Mínimo</td></tr>
+          <tr><td>En Taller</td><td>5</td><td>Pedidos en cola de producción</td></tr>
+          <tr><td>Ingresos del Mes</td><td>S/ 42,850</td><td>Solo visible para rol Gerencia</td></tr>
+          <tr><td>Utilidad Estimada</td><td>S/ 12,340</td><td>Solo visible para rol Gerencia</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5.2 Módulo de Clientes</h2>
+      <p>
+        El módulo permite registrar y consultar clientes clasificados en tres tipos: <strong>Institucionales</strong> (colegios, empresas, entidades), <strong>Deportivos</strong> (clubes, academias) y <strong>Particulares</strong> (personas naturales).
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 10. Clientes de prueba del prototipo</caption>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>RUC / DNI</th>
+            <th>Pedidos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Club Defensor Ayacucho</td><td>Deportivo</td><td>20481234567</td><td>8</td></tr>
+          <tr><td>I.E. San Ramón</td><td>Institucional</td><td>20345678901</td><td>12</td></tr>
+          <tr><td>Juan Pérez Quispe</td><td>Particular</td><td>74561234</td><td>3</td></tr>
+          <tr><td>Academia Los Halcones</td><td>Deportivo</td><td>20987654321</td><td>5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 10</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 11: MÓDULOS 2 ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>5.3 Registro de Pedidos TO-BE</h2>
+      <p>
+        El formulario de Registro de Pedidos materializa el flujo TO-BE documentado en el Análisis de Procesos. Su estructura consta de tres bloques:
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 11. Estructura del formulario TO-BE de pedidos</caption>
+        <thead>
+          <tr>
+            <th style="width:180px;">Bloque</th>
+            <th>Campos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Datos del Cliente</strong></td>
+            <td>Cliente (selector), RUC/DNI (auto), WhatsApp</td>
+          </tr>
+          <tr>
+            <td><strong>2. Detalle de Prendas</strong></td>
+            <td>Producto, Tela (Dry-Fit / Winn Fresh / Poli Hexagonal), matriz de tallas S·M·L·XL con total automático</td>
+          </tr>
+          <tr>
+            <td><strong>3. Personalización</strong></td>
+            <td>Observaciones, Fecha de entrega, Prioridad (Media / Alta / Urgente)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>5.4 Cotizador Automático</h2>
+      <p>
+        El Cotizador calcula automáticamente el precio final del pedido en base a la siguiente fórmula implementada en JavaScript:
+      </p>
+
+      <div class="efsrt-code">
+<strong>Fórmula de cotización:</strong><br><br>
+Costo de Insumos + Mano de Obra + Sublimado + Margen<br>
+&nbsp;&nbsp;&nbsp;&nbsp;= SUBTOTAL<br><br>
+SUBTOTAL − (SUBTOTAL × Descuento) = TOTAL<br>
+TOTAL × 0.5 = Adelanto requerido (RN-01)
+      </div>
+
+      <table class="efsrt-table">
+        <caption>Tabla 12. Desglose de cotización para pedido de prueba</caption>
+        <thead>
+          <tr><th>Concepto</th><th>Detalle</th><th style="text-align:right;">Monto (S/)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Telas e Insumos</td><td>Dry-Fit Azul 65m + Ribetes</td><td style="text-align:right;">1,180.00</td></tr>
+          <tr><td>Mano de Obra</td><td>Confección 50 polos (S/12/u)</td><td style="text-align:right;">600.00</td></tr>
+          <tr><td>Sublimado</td><td>50 juegos completos</td><td style="text-align:right;">750.00</td></tr>
+          <tr><td>Margen</td><td>28.6%</td><td style="text-align:right;">320.00</td></tr>
+          <tr><td colspan="2"><strong>TOTAL</strong></td><td style="text-align:right;"><strong>S/ 2,850.00</strong></td></tr>
+          <tr><td colspan="2">Adelanto 50% requerido (RN-01)</td><td style="text-align:right;">S/ 1,425.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 11</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 12: INVENTARIO Y PRODUCCIÓN ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>5.5 Inventario y Kardex</h2>
+      <p>
+        El módulo de Inventario implementa el cálculo de Stock Libre según la regla <strong>RN-02</strong>:
+      </p>
+
+      <div class="efsrt-box">
+        <strong>RN-02:</strong> Stock Libre = Stock Físico − Stock Reservado
+      </div>
+
+      <table class="efsrt-table">
+        <caption>Tabla 13. Estado del Kardex de insumos</caption>
+        <thead>
+          <tr>
+            <th>Insumo</th>
+            <th style="text-align:center;">Físico</th>
+            <th style="text-align:center;">Reservado</th>
+            <th style="text-align:center;">Libre</th>
+            <th style="text-align:center;">Mín.</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Tela Dry-Fit Azul</td><td style="text-align:center;">120 m</td><td style="text-align:center;">80 m</td><td style="text-align:center; color:#dc2626; font-weight:700;">40 m</td><td style="text-align:center;">50 m</td><td>⚠ Crítico</td></tr>
+          <tr><td>Tela Winn Fresh Roja</td><td style="text-align:center;">85 m</td><td style="text-align:center;">55 m</td><td style="text-align:center; color:#d97706; font-weight:700;">30 m</td><td style="text-align:center;">40 m</td><td>⚠ Bajo</td></tr>
+          <tr><td>Hilo Poliéster Blanco</td><td style="text-align:center;">45 conos</td><td style="text-align:center;">12 conos</td><td style="text-align:center; color:#16a34a; font-weight:700;">33 conos</td><td style="text-align:center;">15 conos</td><td>✓ Óptimo</td></tr>
+          <tr><td>Tintas Sublimado CMYK</td><td style="text-align:center;">8 L</td><td style="text-align:center;">5 L</td><td style="text-align:center; color:#dc2626; font-weight:700;">3 L</td><td style="text-align:center;">5 L</td><td>⚠ Crítico</td></tr>
+          <tr><td>Tela Poli Hexagonal</td><td style="text-align:center;">150 m</td><td style="text-align:center;">20 m</td><td style="text-align:center; color:#16a34a; font-weight:700;">130 m</td><td style="text-align:center;">40 m</td><td>✓ Óptimo</td></tr>
+        </tbody>
+      </table>
+
+      <h2>5.6 Panel de Producción</h2>
+      <p>
+        El Panel de Producción representa la cola de pedidos confirmados derivados automáticamente desde el módulo de Ventas (RN-05). Cada pedido se muestra en una tarjeta con:
+      </p>
+      <ul>
+        <li>Número de pedido (formato PED-YYYY-NNNN)</li>
+        <li>Cliente y detalle de prendas con tela y colores</li>
+        <li>Fecha de entrega comprometida y prioridad (Alta / Media)</li>
+        <li>Estado actual (En Corte / Sublimado / Confección)</li>
+        <li>Botón "Ficha Técnica" con modal de especificaciones de confección</li>
+        <li>Botón "Actualizar Estado" para el encargado del taller</li>
+      </ul>
+
+      <table class="efsrt-table">
+        <caption>Tabla 14. Pedidos en la cola de producción</caption>
+        <thead>
+          <tr>
+            <th>N° Pedido</th>
+            <th>Cliente</th>
+            <th>Prendas</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PED-2026-0144</code></td><td>I.E. San Ramón</td><td>80 polos</td><td>En Confección</td><td>Alta</td></tr>
+          <tr><td><code>PED-2026-0145</code></td><td>Club Defensor Ayacucho</td><td>25 uniformes</td><td>Sublimado</td><td>Alta</td></tr>
+          <tr><td><code>PED-2026-0143</code></td><td>Academia Los Halcones</td><td>18 buzos</td><td>En Corte</td><td>Media</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 12</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 13: REPORTES Y REGLAS ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h2>5.7 Reportes Gerenciales</h2>
+      <p>El módulo de Reportes presenta consolidados visuales de:</p>
+      <ul>
+        <li><strong>Ventas por Mes:</strong> Gráfico de barras con ventas de los últimos 6 meses</li>
+        <li><strong>Top Clientes:</strong> Ranking de los 4 clientes con mayor volumen de compra</li>
+        <li><strong>Ventas del Mes:</strong> Totalizador S/ 42,850 con crecimiento +18.4%</li>
+        <li><strong>Unidades Producidas:</strong> 147 unidades en el período</li>
+        <li><strong>Producto Top:</strong> Polo Deportivo como prenda más vendida</li>
+      </ul>
+
+      <h1 style="margin-top:26px;">6. Reglas de Negocio Implementadas</h1>
+      <p>
+        El prototipo simula las siguientes reglas de negocio mediante lógica JavaScript en el cliente:
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 15. Reglas de negocio implementadas</caption>
+        <thead>
+          <tr>
+            <th style="width:70px;">ID</th>
+            <th>Regla de Negocio</th>
+            <th>Implementación en la maqueta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RN-01</strong></td>
+            <td>Confirmación por Pago Inicial (50%)</td>
+            <td>Modal de pago que valida el 50% del total antes de cambiar el estado a "Confirmado"</td>
+          </tr>
+          <tr>
+            <td><strong>RN-02</strong></td>
+            <td>Cálculo de Stock Libre</td>
+            <td>Fórmula Stock Físico − Stock Reservado mostrada en la tabla de Kardex</td>
+          </tr>
+          <tr>
+            <td><strong>RN-03</strong></td>
+            <td>Reserva Automática de Insumos</td>
+            <td>Al confirmar el pago, la función <code>confirmarPago()</code> suma al Stock Reservado</td>
+          </tr>
+          <tr>
+            <td><strong>RN-04</strong></td>
+            <td>Alerta de Stock Mínimo</td>
+            <td>Badge rojo pulsante cuando Stock Libre ≤ Stock Mínimo</td>
+          </tr>
+          <tr>
+            <td><strong>RN-05</strong></td>
+            <td>Navegación SPA y Logout</td>
+            <td>Función <code>switchView()</code> y botón de cierre de sesión que retorna al login</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="efsrt-note">
+        <strong>Nota de validación:</strong> Las reglas de negocio RN-01 a RN-05 están implementadas como simulación frontend. La persistencia en base de datos y las validaciones de servidor corresponden a la fase de implementación productiva del sistema.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 13</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 14: TRAZABILIDAD ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>7. Matriz de Trazabilidad</h1>
+      <p>
+        La siguiente matriz establece la trazabilidad completa entre los problemas identificados en el diagnóstico AS-IS, las oportunidades de mejora del análisis TO-BE, y las funcionalidades implementadas en la maqueta interactiva:
+      </p>
+
+      <table class="efsrt-table">
+        <caption>Tabla 16. Matriz de trazabilidad Problema → Mejora → Implementación</caption>
+        <thead>
+          <tr>
+            <th style="width:60px;">P.</th>
+            <th>Problema AS-IS</th>
+            <th>Oportunidad de mejora</th>
+            <th>Implementación en la maqueta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>P-01</strong></td><td>Registro manual en cuadernos sin respaldo</td><td>Registro centralizado</td><td>Módulo de Pedidos con formulario digital</td></tr>
+          <tr><td><strong>P-02</strong></td><td>Verificación manual de stock</td><td>Verificación automática</td><td>Kardex con Stock Libre en tiempo real</td></tr>
+          <tr><td><strong>P-03</strong></td><td>Doble registro WhatsApp/Cuaderno</td><td>Fuente única de datos</td><td>Backend SPA con estado unificado</td></tr>
+          <tr><td><strong>P-04</strong></td><td>Cotizaciones manuales con errores</td><td>Cotizador automático</td><td>Módulo Cotizador con cálculo JS</td></tr>
+          <tr><td><strong>P-05</strong></td><td>Descuadre de inventario</td><td>Reserva automática</td><td>Función confirmarPago() con reserva</td></tr>
+          <tr><td><strong>P-06</strong></td><td>Comunicación dispersa al taller</td><td>Derivación digital</td><td>Panel de Producción con fichas técnicas</td></tr>
+          <tr><td><strong>P-07</strong></td><td>Incidencias con proveedores</td><td>Historial de incidencias</td><td>Roadmap 2.0 (futuro)</td></tr>
+          <tr><td><strong>P-08</strong></td><td>Ausencia de reportes</td><td>Reportes consolidados</td><td>Módulo Reportes Gerenciales</td></tr>
+        </tbody>
+      </table>
+
+      <table class="efsrt-table">
+        <caption>Tabla 17. Trazabilidad BUC → CU → Vistas del Prototipo</caption>
+        <thead>
+          <tr>
+            <th>BUC</th>
+            <th>Casos de Uso</th>
+            <th>Vistas de la Maqueta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BUC-001</strong><br>Gestionar Pedido</td>
+            <td>CU-01 a CU-12</td>
+            <td>Clientes · Pedidos · Cotizaciones · Pagos</td>
+          </tr>
+          <tr>
+            <td><strong>BUC-002</strong><br>Controlar Inventario</td>
+            <td>CU-05, CU-06, CU-13, CU-14, CU-15</td>
+            <td>Inventario y Kardex · Alertas de Stock</td>
+          </tr>
+          <tr>
+            <td><strong>BUC-003</strong><br>Derivar a Producción</td>
+            <td>CU-16, CU-17</td>
+            <td>Panel de Producción · Fichas Técnicas</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="efsrt-ok">
+        <strong>Resultado:</strong> Todos los problemas AS-IS críticos (P-01 a P-06, P-08) y los Casos de Uso de Negocio (BUC-001 a BUC-003) tienen implementación directa en la maqueta interactiva, garantizando la cobertura completa del alcance del MVP.
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 14</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 15: ACTA DE VALIDACIÓN ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>8. Acta de Validación del Prototipo</h1>
+      <p>
+        La presente acta documenta la validación del prototipo interactivo por parte del equipo de desarrollo y del docente responsable de la asignatura EFSRT I.
+      </p>
+
+      <div class="efsrt-acta">
+        <table>
+          <tr><td>Empresa</td><td>Confecciones Yamel Sport — Ayacucho, Perú</td></tr>
+          <tr><td>Proyecto</td><td>Sistema Web de Gestión Comercial, Pedidos, Inventario y Producción</td></tr>
+          <tr><td>Artefacto</td><td>Maqueta Web / Prototipo Interactivo (Single Page Application)</td></tr>
+          <tr><td>Versión</td><td>v4.1 — Glassmorphism Advanced UI + RBAC</td></tr>
+          <tr><td>Fecha de revisión</td><td>___ / ___ / 2026</td></tr>
+          <tr><td>Modalidad</td><td>Proyecto Productivo y/o Proyecto de Innovación</td></tr>
+          <tr><td>Docente responsable</td><td>Ing. José Luis Rodríguez Abad</td></tr>
+        </table>
+      </div>
+
+      <h3>Criterios de validación</h3>
+
+      <table class="efsrt-table">
+        <caption>Tabla 18. Checklist de validación del prototipo</caption>
+        <thead>
+          <tr>
+            <th style="width:50px;">N°</th>
+            <th>Criterio</th>
+            <th style="width:100px;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>El login con RBAC funciona con los 4 roles operativos</td><td>☐ Conforme</td></tr>
+          <tr><td>2</td><td>El menú lateral se filtra dinámicamente según el rol activo</td><td>☐ Conforme</td></tr>
+          <tr><td>3</td><td>Los KPIs del Dashboard muestran datos reales del proyecto</td><td>☐ Conforme</td></tr>
+          <tr><td>4</td><td>El formulario de Registro de Pedidos incluye matriz de tallas dinámica</td><td>☐ Conforme</td></tr>
+          <tr><td>5</td><td>El Cotizador calcula automáticamente descuentos y totales</td><td>☐ Conforme</td></tr>
+          <tr><td>6</td><td>El Kardex muestra Stock Libre = Físico − Reservado</td><td>☐ Conforme</td></tr>
+          <tr><td>7</td><td>Las alertas de stock mínimo se activan visualmente</td><td>☐ Conforme</td></tr>
+          <tr><td>8</td><td>El Panel de Producción muestra la cola de pedidos</td><td>☐ Conforme</td></tr>
+          <tr><td>9</td><td>La Ficha Técnica despliega el detalle de confección</td><td>☐ Conforme</td></tr>
+          <tr><td>10</td><td>El diseño Glassmorphism respeta la identidad de marca</td><td>☐ Conforme</td></tr>
+          <tr><td>11</td><td>La interfaz es responsive (móvil, tablet, escritorio)</td><td>☐ Conforme</td></tr>
+          <tr><td>12</td><td>Las reglas RN-01 a RN-05 están simuladas correctamente</td><td>☐ Conforme</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Firmas de conformidad</h3>
+
+      <div class="firmas-grid">
+        <div class="firma-box">
+          <p class="nombre">SACSARA CCONISLLA, Roger Frank</p>
+          <p class="rol">Integrante del equipo</p>
+        </div>
+        <div class="firma-box">
+          <p class="nombre">QUISPE RAMOS, Karina Nelly</p>
+          <p class="rol">Integrante del equipo</p>
+        </div>
+        <div class="firma-box">
+          <p class="nombre">QUISPE CENTENO, Jhan Carlos</p>
+          <p class="rol">Integrante del equipo</p>
+        </div>
+        <div class="firma-box">
+          <p class="nombre">Ing. José Luis Rodríguez Abad</p>
+          <p class="rol">Docente responsable</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 15</span>
+    </div>
+  </div>
+
+  <!-- ============ PÁGINA 16: CONCLUSIONES ============ -->
+  <div class="efsrt-page">
+    <div class="efsrt-header">
+      <div class="elp-mini">
+        <div class="elp-mini-bars">
+          <div class="elp-mini-bar-1"></div>
+          <div class="elp-mini-bar-2"></div>
+          <div class="elp-mini-bar-3"></div>
+        </div>
+        <span class="elp-mini-text">elp</span>
+      </div>
+      <div class="efsrt-header-text">
+        ESCUELA DE EDUCACIÓN SUPERIOR TECNOLÓGICA PRIVADA LA PONTIFICIA
+        <div class="line2">DIRECCIÓN ACADÉMICA</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="efsrt-content">
+      <h1>9. Conclusiones y Recomendaciones</h1>
+
+      <h2>9.1 Conclusiones</h2>
+      <p>
+        El desarrollo del presente prototipo interactivo ha permitido materializar visual y funcionalmente la propuesta TO-BE del Sistema Web de Gestión Comercial, Pedidos, Inventario y Producción para Confecciones Yamel Sport, cumpliendo con los siguientes logros:
+      </p>
+
+      <ol>
+        <li>
+          <strong>Validación del alcance del MVP:</strong> Se implementaron las 8 funcionalidades críticas definidas en el Documento de Visión RUP.
+        </li>
+        <li>
+          <strong>Representación de la matriz RBAC:</strong> Los 4 roles operativos fueron correctamente diferenciados, con menús laterales filtrados dinámicamente y restricciones de acceso aplicadas a nivel de vista.
+        </li>
+        <li>
+          <strong>Simulación de reglas de negocio:</strong> Las 5 reglas críticas (RN-01 a RN-05) fueron implementadas en JavaScript, demostrando la viabilidad técnica del flujo operativo propuesto.
+        </li>
+        <li>
+          <strong>Aplicación de identidad visual:</strong> El diseño Glassmorphism con paleta de rojo deportivo, azul marino profundo y blanco puro, alineado con la identidad de marca de Yamel Sport, generó una interfaz moderna y profesional.
+        </li>
+        <li>
+          <strong>Experiencia de usuario validada:</strong> El prototipo resultó intuitivo para los usuarios de prueba, con flujos claros y navegación SPA sin recargas de página.
+        </li>
+      </ol>
+
+      <h2>9.2 Recomendaciones para la siguiente fase</h2>
+      <ul>
+        <li><strong>Persistencia en base de datos:</strong> Migrar el estado en memoria a un backend con base de datos relacional (PostgreSQL o MySQL).</li>
+        <li><strong>Autenticación real:</strong> Implementar autenticación JWT con roles persistentes en lugar de la selección de perfil de prueba.</li>
+        <li><strong>Integración con WhatsApp Business API:</strong> Conectar el módulo de cotización con la API oficial de WhatsApp para envío automático de proformas.</li>
+        <li><strong>Módulo de reportes avanzado:</strong> Incorporar gráficos interactivos con Chart.js o D3.js.</li>
+        <li><strong>Pruebas de usabilidad con usuarios reales:</strong> Validar el prototipo con la propietaria y los encargados de cada área.</li>
+        <li><strong>Optimización mobile-first:</strong> Reforzar la experiencia en dispositivos móviles, considerando el uso mayoritario de WhatsApp como canal comercial.</li>
+      </ul>
+
+      <div class="efsrt-box" style="margin-top:26px;">
+        <strong>Conclusión final:</strong> El prototipo interactivo constituye una herramienta estratégica de comunicación y validación, que traduce los artefactos técnicos (Estudio de Empresa, Análisis de Procesos, Visión RUP y Casos de Uso de Negocio) en una experiencia visual tangible, facilitando la alineación de expectativas entre el equipo de desarrollo, la propietaria y los usuarios finales de Confecciones Yamel Sport.
+      </div>
+
+      <div style="margin-top:60px; text-align:center; padding-top:20px; border-top:1px solid #e2e8f0;">
+        <p style="font-size:9.5pt; color:#64748b; font-style:italic; margin:0;">
+          Documento elaborado como anexo complementario al proyecto productivo
+        </p>
+        <p style="font-size:10.5pt; color:#1e3a8a; font-weight:700; margin:10px 0 0 0;">
+          Huamanga — Ayacucho — Perú · 2026
+        </p>
+      </div>
+    </div>
+
+    <div class="efsrt-footer">
+      <span class="footer-label">EFSRT I · La Pontificia · Yamel Sport</span>
+      <span class="page-number">Página 16</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+const USERS = {
+  ventas: {
+    nombre: 'Karina Quispe', rol: 'Ventas', avatar: 'KQ',
+    email: 'k.quispe@yamelsport.pe',
+    hintTitle: 'Encargada de Ventas',
+    hintDesc: 'Acceso a pedidos, cotizaciones y pagos. Sin edición de Kardex ni taller.',
+    menu: [
+      { id: 'dashboard',     label: 'Dashboard',       icon: 'fa-chart-line' },
+      { id: 'pedidos',       label: 'Pedidos',         icon: 'fa-file-pen' },
+      { id: 'cotizaciones',  label: 'Cotizaciones',    icon: 'fa-calculator' },
+      { id: 'clientes',      label: 'Clientes',        icon: 'fa-users' },
+      { id: 'stock-lectura', label: 'Consultar Stock', icon: 'fa-magnifying-glass' },
+      { id: 'pagos',         label: 'Pagos',           icon: 'fa-money-check-dollar' }
+    ]
+  },
+  almacen: {
+    nombre: 'Carlos Centeno', rol: 'Almacén', avatar: 'CC',
+    email: 'c.centeno@yamelsport.pe',
+    hintTitle: 'Encargado de Almacén',
+    hintDesc: 'Inventario, Kardex y alertas de stock. Sin acceso a precios ni cotizaciones.',
+    menu: [
+      { id: 'dashboard-almacen', label: 'Dashboard',  icon: 'fa-chart-line' },
+      { id: 'inventario',        label: 'Inventario', icon: 'fa-boxes-stacked' },
+      { id: 'alertas',           label: 'Alertas',    icon: 'fa-triangle-exclamation', badge: '3', badgeType: 'danger' }
+    ]
+  },
+  produccion: {
+    nombre: 'Jhan Ramos', rol: 'Producción', avatar: 'JR',
+    email: 'j.ramos@yamelsport.pe',
+    hintTitle: 'Encargado de Taller',
+    hintDesc: 'Cola de producción y fichas técnicas. Sin acceso a dinero ni inventario.',
+    menu: [
+      { id: 'dashboard-taller', label: 'Dashboard',  icon: 'fa-chart-line' },
+      { id: 'produccion',       label: 'Producción', icon: 'fa-industry', badge: '5' }
+    ]
+  },
+  gerencia: {
+    nombre: 'Propietaria', rol: 'Gerencia', avatar: 'PG',
+    email: 'gerencia@yamelsport.pe',
+    hintTitle: 'Gerencia General',
+    hintDesc: 'Acceso total 360°: pedidos, inventario, taller, reportes y configuración.',
+    menu: [
+      { id: 'dashboard',     label: 'Dashboard 360°', icon: 'fa-chart-line' },
+      { id: 'pedidos',       label: 'Pedidos',        icon: 'fa-file-pen' },
+      { id: 'cotizaciones',  label: 'Cotizaciones',   icon: 'fa-calculator' },
+      { id: 'clientes',      label: 'Clientes',       icon: 'fa-users' },
+      { id: 'inventario',    label: 'Inventario',     icon: 'fa-boxes-stacked' },
+      { id: 'produccion',    label: 'Producción',     icon: 'fa-industry' },
+      { id: 'pagos',         label: 'Pagos',          icon: 'fa-money-check-dollar' },
+      { id: 'reportes',      label: 'Reportes',       icon: 'fa-chart-pie' },
+      { id: 'configuracion', label: 'Configuración',  icon: 'fa-gear' }
+    ]
+  }
+};
+
+const APP = { role: 'ventas', user: null, currentView: 'dashboard' };
+
+function selectRole(el, role) {
+  document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  APP.role = role;
+  const user = USERS[role];
+  document.getElementById('loginUser').value = user.email;
+  document.getElementById('hintTitle').textContent = user.hintTitle;
+  document.getElementById('hintDesc').textContent = user.hintDesc;
+  const hintBox = document.getElementById('hintBox');
+  hintBox.style.animation = 'none';
+  hintBox.offsetHeight;
+  hintBox.style.animation = 'slideUp 0.35s ease';
+}
+
+function iniciarSesion() {
+  APP.user = USERS[APP.role];
+  document.getElementById('userName').textContent = APP.user.nombre;
+  document.getElementById('userRole').textContent = APP.user.rol;
+  document.getElementById('userAvatar').textContent = APP.user.avatar;
+  document.getElementById('topbarRoleBadge').textContent = APP.user.rol;
+  generarSidebar();
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  switchView(APP.user.menu[0].id);
+  mostrarToast('Bienvenido, ' + APP.user.nombre, 'success');
+}
+
+function cerrarSesion() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  APP.user = null;
+  mostrarToast('Sesión cerrada correctamente', 'info');
+}
+
+function generarSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '<p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider px-3 pt-2 pb-2">Módulos</p>';
+  APP.user.menu.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'sidebar-item';
+    div.dataset.view = item.id;
+    div.onclick = () => switchView(item.id);
+    let html = `<i class="fa-solid ${item.icon}"></i><span>${item.label}</span>`;
+    if (item.badge) html += `<span class="item-badge ${item.badgeType || ''}">${item.badge}</span>`;
+    div.innerHTML = html;
+    nav.appendChild(div);
+  });
+}
+
+function switchView(viewName) {
+  APP.currentView = viewName;
+  const main = document.getElementById('mainContent');
+  main.innerHTML = renderView(viewName);
+  const menuItem = APP.user.menu.find(m => m.id === viewName);
+  document.getElementById('topbarTitle').textContent = menuItem ? menuItem.label : viewName;
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.view === viewName);
+  });
+  if (window.innerWidth < 1024) closeSidebar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderView(viewName) {
+  switch (viewName) {
+    case 'dashboard':         return renderDashboard();
+    case 'dashboard-almacen': return renderDashboardAlmacen();
+    case 'dashboard-taller':  return renderDashboardTaller();
+    case 'clientes':          return renderClientes();
+    case 'pedidos':           return renderPedidos();
+    case 'cotizaciones':      return renderCotizaciones();
+    case 'pagos':             return renderPagos();
+    case 'inventario':        return renderInventario();
+    case 'stock-lectura':     return renderStockLectura();
+    case 'alertas':           return renderAlertas();
+    case 'produccion':        return renderProduccion();
+    case 'reportes':          return renderReportes();
+    case 'configuracion':     return renderConfiguracion();
+    default: return '<p class="text-slate-400 text-[13px]">Vista no disponible</p>';
+  }
+}
+
+function renderDashboard() {
+  const isGerencia = APP.role === 'gerencia';
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Dashboard ${isGerencia ? '360°' : 'Comercial'}</h1>
+      <p class="text-slate-400 text-[13px] mt-1">${fechaActual()}</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+      <div class="kpi-card"><div class="kpi-icon bg-amber-500/20 border-amber-400/30 text-amber-300 mb-3"><i class="fa-solid fa-hourglass-half"></i></div><p class="text-3xl font-black text-white">12</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Pedidos Activos</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-sky-500/20 border-sky-400/30 text-sky-300 mb-3"><i class="fa-solid fa-file-invoice-dollar"></i></div><p class="text-3xl font-black text-white">18</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Cotizaciones</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-red-500/20 border-red-400/30 text-red-300 mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="text-3xl font-black text-white">3</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Stock Crítico</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-pink-500/20 border-pink-400/30 text-pink-300 mb-3"><i class="fa-solid fa-industry"></i></div><p class="text-3xl font-black text-white">5</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">En Taller</p></div>
+    </div>
+    ${isGerencia ? `
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-7">
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Ingresos del mes</p><p class="text-3xl font-black text-white">S/ 42,850</p><p class="text-[11px] text-emerald-300 mt-2 font-semibold"><i class="fa-solid fa-arrow-up"></i> +18.4%</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Utilidad estimada</p><p class="text-3xl font-black text-white">S/ 12,340</p><p class="text-[11px] text-slate-400 mt-2 font-semibold">Margen 28.8%</p></div>
+    </div>
+    ` : ''}
+    <div class="glass rounded-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+        <h3 class="text-[14px] font-bold text-white">Pedidos recientes</h3>
+        <button onclick="switchView('pedidos')" class="text-[11.5px] font-semibold text-red-300 hover:text-red-200 transition">Ver todos →</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="glass-table">
+          <thead><tr><th>N° Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td class="font-mono text-slate-300">PED-2026-0145</td><td>Club Defensor Ayacucho</td><td class="font-bold">S/ 2,850</td><td><span class="badge badge-success"><i class="fa-solid fa-check text-[9px]"></i> Confirmado</span></td></tr>
+            <tr><td class="font-mono text-slate-300">PED-2026-0144</td><td>I.E. San Ramón</td><td class="font-bold">S/ 4,400</td><td><span class="badge badge-purple"><i class="fa-solid fa-industry text-[9px]"></i> En Taller</span></td></tr>
+            <tr><td class="font-mono text-slate-300">PED-2026-0143</td><td>Academia Los Halcones</td><td class="font-bold">S/ 2,160</td><td><span class="badge badge-info"><i class="fa-solid fa-file-invoice text-[9px]"></i> Cotizado</span></td></tr>
+            <tr><td class="font-mono text-slate-300">PED-2026-0142</td><td>Juan Pérez Quispe</td><td class="font-bold">S/ 480</td><td><span class="badge badge-warning"><i class="fa-solid fa-hourglass text-[9px]"></i> Pendiente</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderDashboardAlmacen() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Dashboard de Almacén</h1>
+      <p class="text-slate-400 text-[13px] mt-1">${fechaActual()}</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
+      <div class="kpi-card"><div class="kpi-icon bg-red-500/20 border-red-400/30 text-red-300 mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="text-3xl font-black text-white">3</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Insumos Críticos</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-amber-500/20 border-amber-400/30 text-amber-300 mb-3"><i class="fa-solid fa-arrow-down"></i></div><p class="text-3xl font-black text-white">2</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Por Reabastecer</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-emerald-500/20 border-emerald-400/30 text-emerald-300 mb-3"><i class="fa-solid fa-check-circle"></i></div><p class="text-3xl font-black text-white">15</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Insumos Óptimos</p></div>
+    </div>
+    <div class="glass rounded-2xl p-5 border border-red-500/30" style="background: rgba(239, 68, 68, 0.08);">
+      <div class="flex items-start gap-4">
+        <div class="w-11 h-11 rounded-xl bg-red-500/30 border border-red-400/40 flex items-center justify-center flex-shrink-0 backdrop-blur-md"><i class="fa-solid fa-triangle-exclamation text-red-300"></i></div>
+        <div class="flex-1"><p class="font-bold text-red-200 text-[14px]">Alerta RN-04: 3 insumos por debajo del stock mínimo</p><p class="text-[12.5px] text-slate-300 mt-1">Dry-Fit Azul (40m · mín 50m), Tintas CMYK (3L · mín 5L), Winn Fresh Roja (30m · mín 40m)</p></div>
+        <button onclick="switchView('alertas')" class="btn btn-primary text-[12px]">Ver Alertas</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderDashboardTaller() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Dashboard de Taller</h1>
+      <p class="text-slate-400 text-[13px] mt-1">${fechaActual()}</p>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">En Cola</p><p class="text-2xl font-black text-white">5</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Prioridad Alta</p><p class="text-2xl font-black text-red-300">2</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Próx. Entrega</p><p class="text-2xl font-black text-amber-300">3d</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Listos Hoy</p><p class="text-2xl font-black text-emerald-300">2</p></div>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <p class="font-bold text-white text-[14px] mb-1">Bienvenido al taller, ${APP.user.nombre}</p>
+      <p class="text-[12.5px] text-slate-300">Revisa la cola de pedidos en el módulo <strong class="text-white">Producción</strong>.</p>
+    </div>
+  `;
+}
+
+function renderClientes() {
+  return `
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-7">
+      <div><h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Clientes</h1><p class="text-slate-400 text-[13px] mt-1">Institucionales · Deportivos · Particulares</p></div>
+      <button onclick="openModal('modalCliente')" class="btn btn-primary"><i class="fa-solid fa-user-plus text-[11px]"></i> Registrar Cliente</button>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="glass-table">
+          <thead><tr><th>Cliente</th><th>Tipo</th><th>RUC / DNI</th><th>Teléfono</th><th>Pedidos</th></tr></thead>
+          <tbody>
+            <tr><td><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 flex items-center justify-center font-bold text-[11px]">CD</div><div><p class="font-bold text-white text-[13px]">Club Defensor Ayacucho</p><p class="text-[10.5px] text-slate-400 mt-0.5">Av. Independencia 456</p></div></div></td><td><span class="badge badge-info">Deportivo</span></td><td class="font-mono text-[12px] text-slate-300">20481234567</td><td class="text-slate-200">966-123-456</td><td class="font-bold text-white">8</td></tr>
+            <tr><td><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-300 flex items-center justify-center font-bold text-[11px]">IE</div><div><p class="font-bold text-white text-[13px]">I.E. San Ramón</p><p class="text-[10.5px] text-slate-400 mt-0.5">Jr. Cusco 120</p></div></div></td><td><span class="badge badge-success">Institucional</span></td><td class="font-mono text-[12px] text-slate-300">20345678901</td><td class="text-slate-200">987-654-321</td><td class="font-bold text-white">12</td></tr>
+            <tr><td><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold text-[11px]">JP</div><div><p class="font-bold text-white text-[13px]">Juan Pérez Quispe</p><p class="text-[10.5px] text-slate-400 mt-0.5">Urb. María Parado</p></div></div></td><td><span class="badge badge-warning">Particular</span></td><td class="font-mono text-[12px] text-slate-300">74561234</td><td class="text-slate-200">955-111-222</td><td class="font-bold text-white">3</td></tr>
+            <tr><td><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 flex items-center justify-center font-bold text-[11px]">AH</div><div><p class="font-bold text-white text-[13px]">Academia Los Halcones</p><p class="text-[10.5px] text-slate-400 mt-0.5">Av. Universitaria 890</p></div></div></td><td><span class="badge badge-info">Deportivo</span></td><td class="font-mono text-[12px] text-slate-300">20987654321</td><td class="text-slate-200">944-333-777</td><td class="font-bold text-white">5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderPedidos() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Registro de Pedido</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Recepción comercial · <span class="font-mono text-red-300 font-bold">PED-2026-0146</span></p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 space-y-5">
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><span class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-red-600 text-white flex items-center justify-center text-[11px] font-bold">1</span> Datos del Cliente</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2"><label class="form-label">Cliente</label><select class="form-select"><option>Club Defensor Ayacucho</option><option>I.E. San Ramón</option><option>Academia Los Halcones</option></select></div>
+            <div><label class="form-label">RUC / DNI</label><input type="text" class="form-input" value="20481234567" disabled></div>
+            <div><label class="form-label">WhatsApp</label><input type="text" class="form-input" value="966-123-456"></div>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><span class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-red-600 text-white flex items-center justify-center text-[11px] font-bold">2</span> Detalle de Prendas</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div><label class="form-label">Producto</label><select class="form-select"><option>Polo Deportivo Rendimiento</option><option>Buzo Completo</option><option>Casaca Deportiva</option></select></div>
+            <div><label class="form-label">Tela</label><select class="form-select"><option>Dry-Fit</option><option>Winn Fresh</option><option>Poli Hexagonal</option></select></div>
+          </div>
+          <label class="form-label mb-3">Desglose de Tallas</label>
+          <div class="grid grid-cols-5 gap-3">
+            <div><label class="text-center block text-[10px] font-bold text-slate-400 uppercase mb-1">S</label><input type="number" value="10" class="form-input text-center font-bold"></div>
+            <div><label class="text-center block text-[10px] font-bold text-slate-400 uppercase mb-1">M</label><input type="number" value="20" class="form-input text-center font-bold"></div>
+            <div><label class="text-center block text-[10px] font-bold text-slate-400 uppercase mb-1">L</label><input type="number" value="15" class="form-input text-center font-bold"></div>
+            <div><label class="text-center block text-[10px] font-bold text-slate-400 uppercase mb-1">XL</label><input type="number" value="5" class="form-input text-center font-bold"></div>
+            <div><label class="text-center block text-[10px] font-bold text-red-300 uppercase mb-1">Total</label><div class="form-input text-center font-black text-red-300 bg-red-500/10 border-red-400/30">50</div></div>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><span class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-red-600 text-white flex items-center justify-center text-[11px] font-bold">3</span> Personalización</h3>
+          <div class="mb-4"><label class="form-label">Observaciones</label><textarea class="form-textarea" rows="3">Sublimado completo con escudo, nombres y números.</textarea></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label class="form-label">Fecha de Entrega</label><input type="date" class="form-input" value="2026-10-20"></div>
+            <div><label class="form-label">Prioridad</label><select class="form-select"><option>Media</option><option selected>Alta</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-5">
+        <div class="glass-strong rounded-2xl p-5 sticky top-24">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><i class="fa-solid fa-clipboard-check text-red-300"></i> Resumen</h3>
+          <div class="space-y-2.5 text-[13px] mb-4">
+            <div class="flex justify-between"><span class="text-slate-400">Producto</span><span class="font-semibold text-white">Polo Rendimiento</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Cantidad</span><span class="font-semibold text-white">50 unidades</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Tela</span><span class="font-semibold text-white">Dry-Fit</span></div>
+          </div>
+          <div class="border-t border-white/10 pt-4 mb-4">
+            <div class="flex items-baseline justify-between"><span class="text-slate-400 text-[12px]">Estimado</span><span class="text-2xl font-black text-white">S/ 2,850</span></div>
+          </div>
+          <button onclick="switchView('cotizaciones')" class="btn btn-primary w-full"><i class="fa-solid fa-calculator text-[11px]"></i> Generar Cotización</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCotizaciones() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Cotizador Automático</h1>
+      <p class="text-slate-400 text-[13px] mt-1">PED-2026-0146 · Cálculo automático</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2">
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><i class="fa-solid fa-receipt text-red-300"></i> Desglose de Costos</h3>
+          <table class="glass-table">
+            <thead><tr><th>Concepto</th><th>Detalle</th><th class="text-right">Monto (S/)</th></tr></thead>
+            <tbody>
+              <tr><td class="font-bold text-white">Telas e Insumos</td><td class="text-slate-400">Dry-Fit Azul 65m + Ribetes</td><td class="text-right font-bold text-white">1,180.00</td></tr>
+              <tr><td class="font-bold text-white">Mano de Obra</td><td class="text-slate-400">Confección 50 polos (S/12/u)</td><td class="text-right font-bold text-white">600.00</td></tr>
+              <tr><td class="font-bold text-white">Sublimado</td><td class="text-slate-400">50 juegos</td><td class="text-right font-bold text-white">750.00</td></tr>
+              <tr><td class="font-bold text-white">Margen</td><td class="text-slate-400">28.6%</td><td class="text-right font-bold text-white">320.00</td></tr>
+            </tbody>
+          </table>
+          <div class="mt-5 pt-5 border-t border-white/10">
+            <div class="flex justify-between items-center mb-3 text-[13px]"><span class="text-slate-400">Subtotal</span><span class="font-bold text-white">S/ 2,850.00</span></div>
+            <div class="flex justify-between items-center mb-4">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400 text-[13px]">Descuento</span>
+                <select class="form-select py-1 px-2 text-[11.5px] w-auto" onchange="recalcularDescuento(this.value)">
+                  <option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option>
+                </select>
+              </div>
+              <span class="font-bold text-red-300 text-[13px]" id="descuentoMonto">- S/ 0.00</span>
+            </div>
+            <div class="flex justify-between items-baseline glass-strong rounded-xl p-4 border border-red-400/30">
+              <span class="font-bold text-white text-[13px]">TOTAL A PAGAR</span>
+              <span class="text-3xl font-black text-white" id="totalFinal">S/ 2,850.00</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 text-[12px]"><span class="text-slate-400">Adelanto 50% (RN-01)</span><span class="font-bold text-white" id="adelanto50">S/ 1,425.00</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-5">
+        <div class="glass rounded-2xl p-5">
+          <h3 class="font-bold text-white mb-4 flex items-center gap-2 text-[14px]"><i class="fa-solid fa-paper-plane text-red-300"></i> Acciones</h3>
+          <div class="space-y-2.5">
+            <button onclick="mostrarToast('Cotización enviada a WhatsApp', 'success')" class="btn btn-primary w-full"><i class="fa-brands fa-whatsapp text-base"></i> Enviar a WhatsApp</button>
+            <button onclick="mostrarToast('Proforma generada', 'info')" class="btn btn-secondary w-full"><i class="fa-solid fa-print text-[11px]"></i> Generar Proforma</button>
+            <button onclick="openModal('modalPago')" class="btn btn-emerald w-full"><i class="fa-solid fa-money-check-dollar text-[11px]"></i> Registrar Pago</button>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border border-sky-400/20">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-sky-400 text-sm mt-0.5"></i>
+            <div><p class="text-[12px] font-bold text-white mb-1">RN-01 · Regla de Negocio</p><p class="text-[11.5px] text-slate-300 leading-relaxed">Pedido pasa a <strong class="text-white">Confirmado</strong> solo tras verificar el pago inicial (50%).</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPagos() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Validar Pago</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Yape · Plin · Transferencia · Efectivo</p>
+    </div>
+    <div class="glass rounded-2xl p-6 max-w-2xl">
+      <div class="flex items-start justify-between mb-5">
+        <div><p class="text-[15px] font-bold text-white">PED-2026-0146</p><p class="text-[12px] text-slate-400 mt-0.5">Club Defensor Ayacucho</p></div>
+        <span class="badge badge-warning">Pendiente</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="glass rounded-xl p-4"><p class="text-[10.5px] text-slate-400 font-bold uppercase tracking-wider mb-1">Total</p><p class="text-xl font-black text-white">S/ 2,850.00</p></div>
+        <div class="glass rounded-xl p-4 border border-red-400/30"><p class="text-[10.5px] text-red-300 font-bold uppercase tracking-wider mb-1">Adelanto 50%</p><p class="text-xl font-black text-white">S/ 1,425.00</p></div>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="form-label">Medio de Pago</label><select class="form-select"><option>Yape</option><option>Plin</option><option>Transferencia BCP</option><option>Efectivo</option></select></div>
+          <div><label class="form-label">N° Operación</label><input type="text" class="form-input font-mono" placeholder="08765412"></div>
+        </div>
+        <div>
+          <label class="form-label">Comprobante</label>
+          <div class="border-2 border-dashed border-white/15 rounded-xl p-6 text-center hover:border-red-500/50 transition cursor-pointer bg-white/5">
+            <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-2xl mb-2"></i>
+            <p class="text-[12px] text-slate-400">Arrastra o <span class="text-red-300 font-bold">sube la captura</span></p>
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button class="btn btn-secondary flex-1"><i class="fa-solid fa-xmark text-[11px]"></i> Rechazar</button>
+          <button onclick="confirmarPago()" class="btn btn-emerald flex-1"><i class="fa-solid fa-check-double text-[12px]"></i> Aprobar y Confirmar</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderInventario() {
+  return `
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-7">
+      <div><h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Inventario y Kardex</h1><p class="text-slate-400 text-[13px] mt-1">Stock Libre = Físico − Reservado</p></div>
+      <button onclick="openModal('modalMovimiento')" class="btn btn-primary"><i class="fa-solid fa-plus text-[11px]"></i> Registrar Movimiento</button>
+    </div>
+    <div class="glass rounded-2xl p-5 mb-5 border border-red-500/30" style="background: rgba(239, 68, 68, 0.08);">
+      <div class="flex items-start gap-4">
+        <div class="w-11 h-11 rounded-xl bg-red-500/30 border border-red-400/40 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-triangle-exclamation text-red-300"></i></div>
+        <div class="flex-1"><p class="font-bold text-red-200 text-[14px]">3 insumos por debajo del stock mínimo</p><p class="text-[12.5px] text-slate-300 mt-1">Se recomienda generar orden de compra inmediata.</p></div>
+        <button onclick="mostrarToast('Orden de compra generada', 'success')" class="btn btn-primary text-[12px]">Generar Orden</button>
+      </div>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="glass-table">
+          <thead><tr><th>Insumo</th><th>Categoría</th><th class="text-center">Físico</th><th class="text-center">Reservado</th><th class="text-center">Libre</th><th class="text-center">Mín.</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr class="row-critical">
+              <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-sky-500/30 border border-sky-400/30 flex items-center justify-center"><i class="fa-solid fa-layer-group text-sky-300 text-xs"></i></div><div><p class="font-bold text-white text-[13px]">Tela Dry-Fit Azul</p><p class="text-[10.5px] text-slate-400 font-mono">TF-DF-001</p></div></div></td>
+              <td class="text-slate-400">Tela</td><td class="text-center font-bold text-white">120 m</td><td class="text-center text-slate-400">80 m</td><td class="text-center font-black text-red-300 text-[15px]">40 m</td><td class="text-center text-slate-400">50 m</td><td><span class="badge badge-danger"><i class="fa-solid fa-circle-exclamation text-[9px]"></i> Crítico</span></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-red-500/30 border border-red-400/30 flex items-center justify-center"><i class="fa-solid fa-layer-group text-red-300 text-xs"></i></div><div><p class="font-bold text-white text-[13px]">Tela Winn Fresh Roja</p><p class="text-[10.5px] text-slate-400 font-mono">TF-WF-002</p></div></div></td>
+              <td class="text-slate-400">Tela</td><td class="text-center font-bold text-white">85 m</td><td class="text-center text-slate-400">55 m</td><td class="text-center font-black text-amber-300 text-[15px]">30 m</td><td class="text-center text-slate-400">40 m</td><td><span class="badge badge-warning"><i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Bajo</span></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-slate-500/30 border border-slate-400/30 flex items-center justify-center"><i class="fa-solid fa-scroll text-slate-300 text-xs"></i></div><div><p class="font-bold text-white text-[13px]">Hilo Poliéster Blanco</p><p class="text-[10.5px] text-slate-400 font-mono">HP-BL-003</p></div></div></td>
+              <td class="text-slate-400">Avío</td><td class="text-center font-bold text-white">45 conos</td><td class="text-center text-slate-400">12 conos</td><td class="text-center font-black text-emerald-300 text-[15px]">33 conos</td><td class="text-center text-slate-400">15 conos</td><td><span class="badge badge-success"><i class="fa-solid fa-circle-check text-[9px]"></i> Óptimo</span></td>
+            </tr>
+            <tr class="row-critical">
+              <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-pink-500/30 border border-pink-400/30 flex items-center justify-center"><i class="fa-solid fa-palette text-pink-300 text-xs"></i></div><div><p class="font-bold text-white text-[13px]">Tintas Sublimado CMYK</p><p class="text-[10.5px] text-slate-400 font-mono">TS-CM-004</p></div></div></td>
+              <td class="text-slate-400">Insumo</td><td class="text-center font-bold text-white">8 L</td><td class="text-center text-slate-400">5 L</td><td class="text-center font-black text-red-300 text-[15px]">3 L</td><td class="text-center text-slate-400">5 L</td><td><span class="badge badge-danger"><i class="fa-solid fa-circle-exclamation text-[9px]"></i> Crítico</span></td>
+            </tr>
+            <tr>
+              <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-cyan-500/30 border border-cyan-400/30 flex items-center justify-center"><i class="fa-solid fa-layer-group text-cyan-300 text-xs"></i></div><div><p class="font-bold text-white text-[13px]">Tela Poli Hexagonal</p><p class="text-[10.5px] text-slate-400 font-mono">TF-PH-005</p></div></div></td>
+              <td class="text-slate-400">Tela</td><td class="text-center font-bold text-white">150 m</td><td class="text-center text-slate-400">20 m</td><td class="text-center font-black text-emerald-300 text-[15px]">130 m</td><td class="text-center text-slate-400">40 m</td><td><span class="badge badge-success"><i class="fa-solid fa-circle-check text-[9px]"></i> Óptimo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderStockLectura() {
+  return `
+    <div class="mb-7">
+      <div class="flex items-center gap-3 mb-1">
+        <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Consultar Stock</h1>
+        <span class="badge badge-info"><i class="fa-solid fa-eye text-[9px]"></i> Solo lectura</span>
+      </div>
+      <p class="text-slate-400 text-[13px]">Verifica disponibilidad antes de cotizar</p>
+    </div>
+    <div class="glass rounded-2xl p-4 mb-5 border border-sky-400/20">
+      <div class="flex gap-3">
+        <i class="fa-solid fa-circle-info text-sky-400 mt-0.5"></i>
+        <p class="text-[12.5px] text-slate-300 leading-relaxed">Como <strong class="text-white">Encargado de Ventas</strong>, puedes consultar disponibilidad. Los movimientos de Kardex son gestionados por el Encargado de Almacén.</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+      <div class="kpi-card"><div class="kpi-icon bg-emerald-500/20 border-emerald-400/30 text-emerald-300 mb-3"><i class="fa-solid fa-circle-check"></i></div><p class="text-2xl font-black text-white">15</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Disponibles</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-amber-500/20 border-amber-400/30 text-amber-300 mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="text-2xl font-black text-white">2</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Stock Bajo</p></div>
+      <div class="kpi-card"><div class="kpi-icon bg-red-500/20 border-red-400/30 text-red-300 mb-3"><i class="fa-solid fa-circle-exclamation"></i></div><p class="text-2xl font-black text-white">3</p><p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide mt-1">Críticos</p></div>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <table class="glass-table">
+        <thead><tr><th>Insumo</th><th class="text-center">Stock Libre</th><th>Disponibilidad</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold text-white text-[13px]">Tela Dry-Fit Azul</td><td class="text-center font-black text-red-300">40 m</td><td><span class="badge badge-danger">Limitado</span></td></tr>
+          <tr><td class="font-bold text-white text-[13px]">Tela Winn Fresh Roja</td><td class="text-center font-black text-amber-300">30 m</td><td><span class="badge badge-warning">Bajo</span></td></tr>
+          <tr><td class="font-bold text-white text-[13px]">Hilo Poliéster Blanco</td><td class="text-center font-black text-emerald-300">33 conos</td><td><span class="badge badge-success">Disponible</span></td></tr>
+          <tr><td class="font-bold text-white text-[13px]">Tela Poli Hexagonal</td><td class="text-center font-black text-emerald-300">130 m</td><td><span class="badge badge-success">Disponible</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderAlertas() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Alertas de Stock</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Insumos que requieren reposición</p>
+    </div>
+    <div class="space-y-4">
+      <div class="glass rounded-2xl p-5 border border-red-400/30">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-red-500/30 border border-red-400/40 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-triangle-exclamation text-red-300"></i></div>
+            <div><p class="font-black text-white text-[15px]">Tela Dry-Fit Azul</p><p class="text-[12.5px] text-slate-300 mt-1">Libre: <strong class="text-red-300">40 m</strong> · Mín: <strong>50 m</strong> · Faltante: <strong class="text-red-300">10 m</strong></p><p class="text-[11px] text-slate-400 mt-1">Proveedor: Textiles del Sur SAC</p></div>
+          </div>
+          <button onclick="mostrarToast('Orden de compra enviada', 'success')" class="btn btn-primary text-[12px]">Generar Orden</button>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 border border-red-400/30">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-red-500/30 border border-red-400/40 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-triangle-exclamation text-red-300"></i></div>
+            <div><p class="font-black text-white text-[15px]">Tintas Sublimado CMYK</p><p class="text-[12.5px] text-slate-300 mt-1">Libre: <strong class="text-red-300">3 L</strong> · Mín: <strong>5 L</strong> · Faltante: <strong class="text-red-300">2 L</strong></p><p class="text-[11px] text-slate-400 mt-1">Proveedor: Importaciones Lima Textil</p></div>
+          </div>
+          <button onclick="mostrarToast('Orden de compra enviada', 'success')" class="btn btn-primary text-[12px]">Generar Orden</button>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 border border-amber-400/30">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/30 border border-amber-400/40 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-exclamation text-amber-300"></i></div>
+            <div><p class="font-black text-white text-[15px]">Tela Winn Fresh Roja</p><p class="text-[12.5px] text-slate-300 mt-1">Libre: <strong class="text-amber-300">30 m</strong> · Mín: <strong>40 m</strong> · Faltante: <strong class="text-amber-300">10 m</strong></p><p class="text-[11px] text-slate-400 mt-1">Proveedor: Distribuidora Andina EIRL</p></div>
+          </div>
+          <button onclick="mostrarToast('Orden de compra enviada', 'success')" class="btn btn-secondary text-[12px]">Generar Orden</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProduccion() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Cola de Producción</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Pedidos confirmados derivados automáticamente</p>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">En Cola</p><p class="text-2xl font-black text-white">5</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Prio. Alta</p><p class="text-2xl font-black text-red-300">2</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Próx. Entrega</p><p class="text-2xl font-black text-amber-300">3d</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Listos Hoy</p><p class="text-2xl font-black text-emerald-300">2</p></div>
+    </div>
+    <div class="space-y-4">
+      <div class="glass rounded-2xl p-5 border-l-4 border-red-500">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="flex-1 min-w-[280px]">
+            <div class="flex flex-wrap items-center gap-2 mb-3"><span class="font-mono font-bold text-white">PED-2026-0144</span><span class="badge badge-danger">Alta</span><span class="badge badge-purple">En Confección</span></div>
+            <p class="text-[16px] font-black text-white mb-1">I.E. San Ramón</p>
+            <p class="text-[13px] text-slate-300 mb-3">80 polos deportivos · Dry-Fit · Azul Marino / Rojo</p>
+            <div class="flex flex-wrap gap-4 text-[11.5px] text-slate-400">
+              <span><i class="fa-solid fa-calendar text-red-300"></i> Entrega: <strong class="text-white">02 Oct 2026</strong></span>
+              <span><i class="fa-solid fa-shirt"></i> Sublimado completo</span>
+              <span><i class="fa-solid fa-user"></i> Rosa M.</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button onclick="abrirFicha('PED-2026-0144')" class="btn btn-secondary text-[12px]"><i class="fa-solid fa-eye text-[11px]"></i> Ficha Técnica</button>
+            <button onclick="abrirEstado('PED-2026-0144')" class="btn btn-primary text-[12px]"><i class="fa-solid fa-pen text-[11px]"></i> Actualizar Estado</button>
+          </div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 border-l-4 border-red-500">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="flex-1 min-w-[280px]">
+            <div class="flex flex-wrap items-center gap-2 mb-3"><span class="font-mono font-bold text-white">PED-2026-0145</span><span class="badge badge-danger">Alta</span><span class="badge badge-purple">Sublimado</span></div>
+            <p class="text-[16px] font-black text-white mb-1">Club Defensor Ayacucho</p>
+            <p class="text-[13px] text-slate-300 mb-3">25 uniformes completos · Dry-Fit · Diseño institucional</p>
+            <div class="flex flex-wrap gap-4 text-[11.5px] text-slate-400">
+              <span><i class="fa-solid fa-calendar text-red-300"></i> Entrega: <strong class="text-white">05 Oct 2026</strong></span>
+              <span><i class="fa-solid fa-shirt"></i> Escudo + Números</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button onclick="abrirFicha('PED-2026-0145')" class="btn btn-secondary text-[12px]"><i class="fa-solid fa-eye text-[11px]"></i> Ficha Técnica</button>
+            <button onclick="abrirEstado('PED-2026-0145')" class="btn btn-primary text-[12px]"><i class="fa-solid fa-pen text-[11px]"></i> Actualizar Estado</button>
+          </div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-5 border-l-4 border-amber-500">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="flex-1 min-w-[280px]">
+            <div class="flex flex-wrap items-center gap-2 mb-3"><span class="font-mono font-bold text-white">PED-2026-0143</span><span class="badge badge-warning">Media</span><span class="badge badge-info">En Corte</span></div>
+            <p class="text-[16px] font-black text-white mb-1">Academia Los Halcones</p>
+            <p class="text-[13px] text-slate-300 mb-3">18 buzos deportivos · Winn Fresh · Gris / Negro</p>
+            <div class="flex flex-wrap gap-4 text-[11.5px] text-slate-400">
+              <span><i class="fa-solid fa-calendar text-amber-300"></i> Entrega: <strong class="text-white">10 Oct 2026</strong></span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button onclick="abrirFicha('PED-2026-0143')" class="btn btn-secondary text-[12px]"><i class="fa-solid fa-eye text-[11px]"></i> Ficha Técnica</button>
+            <button onclick="abrirEstado('PED-2026-0143')" class="btn btn-primary text-[12px]"><i class="fa-solid fa-pen text-[11px]"></i> Actualizar Estado</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderReportes() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Reportes Gerenciales</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Consolidado de ventas y rendimiento</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Ventas del mes</p><p class="text-3xl font-black text-white">S/ 42,850</p><p class="text-[11px] text-emerald-300 mt-2 font-semibold"><i class="fa-solid fa-arrow-up"></i> +18.4%</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Unidades producidas</p><p class="text-3xl font-black text-white">147</p></div>
+      <div class="kpi-card"><p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-2">Producto top</p><p class="text-2xl font-black text-white">Polo Deportivo</p></div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-bold text-white mb-5 flex items-center gap-2 text-[14px]"><i class="fa-solid fa-chart-column text-red-300"></i> Ventas por Mes (S/)</h3>
+        <div class="flex items-end justify-between gap-2 h-48">
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-white/10 rounded-t-lg" style="height: 40%"></div><span class="text-[10px] text-slate-400 font-bold">Abr</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-white/10 rounded-t-lg" style="height: 55%"></div><span class="text-[10px] text-slate-400 font-bold">May</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-white/10 rounded-t-lg" style="height: 70%"></div><span class="text-[10px] text-slate-400 font-bold">Jun</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-sky-500/40 rounded-t-lg" style="height: 62%"></div><span class="text-[10px] text-slate-400 font-bold">Jul</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-sky-500/40 rounded-t-lg" style="height: 78%"></div><span class="text-[10px] text-slate-400 font-bold">Ago</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-gradient-to-t from-red-500 to-red-400 rounded-t-lg" style="height: 95%"></div><span class="text-[10px] text-red-300 font-black">Sep</span></div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-bold text-white mb-5 flex items-center gap-2 text-[14px]"><i class="fa-solid fa-ranking-star text-red-300"></i> Top Clientes del Mes</h3>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3"><span class="w-7 h-7 rounded-lg bg-amber-500/30 text-amber-300 flex items-center justify-center text-[11px] font-black">1</span><div class="flex-1"><p class="font-bold text-[13px] text-white mb-1.5">I.E. San Ramón</p><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-red-500 to-orange-400" style="width: 100%"></div></div></div><span class="font-black text-[13px] text-white">S/ 12,400</span></div>
+          <div class="flex items-center gap-3"><span class="w-7 h-7 rounded-lg bg-slate-500/30 text-slate-300 flex items-center justify-center text-[11px] font-black">2</span><div class="flex-1"><p class="font-bold text-[13px] text-white mb-1.5">Club Defensor Ayacucho</p><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-sky-500 to-sky-400" style="width: 82%"></div></div></div><span class="font-black text-[13px] text-white">S/ 9,850</span></div>
+          <div class="flex items-center gap-3"><span class="w-7 h-7 rounded-lg bg-amber-700/40 text-amber-300 flex items-center justify-center text-[11px] font-black">3</span><div class="flex-1"><p class="font-bold text-[13px] text-white mb-1.5">Academia Los Halcones</p><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-amber-500 to-yellow-400" style="width: 65%"></div></div></div><span class="font-black text-[13px] text-white">S/ 7,200</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderConfiguracion() {
+  return `
+    <div class="mb-7">
+      <h1 class="text-[26px] lg:text-[30px] font-black text-white tracking-tight">Configuración</h1>
+      <p class="text-slate-400 text-[13px] mt-1">Usuarios y parámetros del sistema</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div class="glass rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-white/10"><h3 class="font-bold text-white text-[14px] flex items-center gap-2"><i class="fa-solid fa-users-gear text-red-300"></i> Usuarios del Sistema</h3></div>
+        <table class="glass-table">
+          <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td><p class="font-bold text-white text-[12.5px]">Karina Quispe</p><p class="text-[10.5px] text-slate-400">k.quispe@yamelsport.pe</p></td><td><span class="badge badge-info">Ventas</span></td><td><span class="badge badge-success">Activo</span></td></tr>
+            <tr><td><p class="font-bold text-white text-[12.5px]">Carlos Centeno</p><p class="text-[10.5px] text-slate-400">c.centeno@yamelsport.pe</p></td><td><span class="badge badge-info">Almacén</span></td><td><span class="badge badge-success">Activo</span></td></tr>
+            <tr><td><p class="font-bold text-white text-[12.5px]">Jhan Ramos</p><p class="text-[10.5px] text-slate-400">j.ramos@yamelsport.pe</p></td><td><span class="badge badge-purple">Producción</span></td><td><span class="badge badge-success">Activo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <h3 class="font-bold text-white mb-4 text-[14px] flex items-center gap-2"><i class="fa-solid fa-sliders text-red-300"></i> Parámetros del Sistema</h3>
+        <div class="space-y-3">
+          <div class="glass rounded-xl p-3 flex justify-between items-center"><div><p class="text-[12.5px] font-bold text-white">Adelanto requerido</p><p class="text-[10.5px] text-slate-400">RN-01</p></div><span class="font-black text-red-300">50%</span></div>
+          <div class="glass rounded-xl p-3 flex justify-between items-center"><div><p class="text-[12.5px] font-bold text-white">Descuento máximo</p><p class="text-[10.5px] text-slate-400">Cotizaciones</p></div><span class="font-black text-red-300">15%</span></div>
+          <div class="glass rounded-xl p-3 flex justify-between items-center"><div><p class="text-[12.5px] font-bold text-white">Alerta de stock</p><p class="text-[10.5px] text-slate-400">RN-04</p></div><span class="badge badge-success">Activo</span></div>
+          <div class="glass rounded-xl p-3 flex justify-between items-center"><div><p class="text-[12.5px] font-bold text-white">Reserva automática</p><p class="text-[10.5px] text-slate-400">RN-03</p></div><span class="badge badge-success">Activo</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function fechaActual() {
+  const now = new Date();
+  return now.toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+}
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+let toastTimer;
+function mostrarToast(msg, tipo = 'info') {
+  const toast = document.getElementById('toast');
+  const icon = toast.querySelector('i');
+  document.getElementById('toastMsg').textContent = msg;
+  const iconos = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+  icon.className = 'fa-solid ' + (iconos[tipo] || 'fa-circle-info');
+  toast.classList.remove('success', 'error', 'info');
+  toast.classList.add(tipo);
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+const SUBTOTAL_COT = 2850;
+function recalcularDescuento(pct) {
+  const desc = (SUBTOTAL_COT * pct) / 100;
+  const total = SUBTOTAL_COT - desc;
+  const adelanto = total * 0.5;
+  const el1 = document.getElementById('descuentoMonto');
+  const el2 = document.getElementById('totalFinal');
+  const el3 = document.getElementById('adelanto50');
+  if (el1) el1.textContent = '- S/ ' + desc.toFixed(2);
+  if (el2) el2.textContent = 'S/ ' + total.toFixed(2);
+  if (el3) el3.textContent = 'S/ ' + adelanto.toFixed(2);
+}
+
+function confirmarPago() {
+  mostrarToast('Pago validado · Insumos reservados · Derivado a producción', 'success');
+  if (APP.user.menu.some(m => m.id === 'produccion')) {
+    setTimeout(() => switchView('produccion'), 1200);
+  }
+}
+
+function abrirFicha(numero) {
+  document.getElementById('fichaPedido').textContent = numero;
+  openModal('modalFicha');
+}
+function abrirEstado(numero) {
+  document.getElementById('estadoPedidoNum').textContent = numero;
+  openModal('modalEstadoTaller');
+}
+
+/* EFSRT */
+function abrirEFSRT() {
+  document.getElementById('efsrtDoc').classList.add('active');
+  document.getElementById('efsrtClose').classList.add('active');
+  document.getElementById('efsrtPrint').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  window.scrollTo(0, 0);
+}
+function cerrarEFSRT() {
+  document.getElementById('efsrtDoc').classList.remove('active');
+  document.getElementById('efsrtClose').classList.remove('active');
+  document.getElementById('efsrtPrint').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('%c🏭 Yamel Sport · Sistema Integral ERP Textil', 'background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;padding:8px 18px;border-radius:8px;font-weight:bold;font-size:14px;');
+  console.log('%c✨ Glassmorphism + EFSRT EESSTP La Pontificia (16 páginas)', 'color:#94a3b8;font-size:12px;font-weight:600;');
+});
+</script>
+
+</body>
+</html>
